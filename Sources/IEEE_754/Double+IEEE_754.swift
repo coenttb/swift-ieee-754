@@ -54,6 +54,29 @@ extension Double {
     }
 }
 
+// MARK: - Canonical Serialization
+
+extension Double {
+    /// Returns IEEE 754 binary64 byte representation
+    ///
+    /// Canonical serialization following FixedWidthInteger pattern.
+    /// IEEE 754 is THE authoritative representation for floating-point values.
+    ///
+    /// Delegates to `IEEE_754.Binary64.bytes(from:endianness:)`.
+    ///
+    /// - Parameter endianness: Byte order (little or big)
+    /// - Returns: 8-byte array in IEEE 754 binary64 format
+    ///
+    /// Example:
+    /// ```swift
+    /// let bytes = value.bytes()
+    /// let bytes = value.bytes(endianness: .big)
+    /// ```
+    public func bytes(endianness: [UInt8].Endianness = .little) -> [UInt8] {
+        IEEE_754.Binary64.bytes(from: self, endianness: endianness)
+    }
+}
+
 // MARK: - Type-level Methods
 
 extension Double {

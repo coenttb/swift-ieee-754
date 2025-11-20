@@ -44,6 +44,24 @@ struct Binary64Tests {
         #expect(restored == value)
     }
 
+    @Test("Double direct bytes method")
+    func doubleDirectBytes() {
+        let value: Double = 2.71828
+        let bytes = value.bytes()
+        let restored = Double(bytes: bytes)
+
+        #expect(restored == value)
+    }
+
+    @Test("Double direct bytes big-endian")
+    func doubleDirectBytesBigEndian() {
+        let value: Double = 1.41421
+        let bytes = value.bytes(endianness: .big)
+        let restored = Double(bytes: bytes, endianness: .big)
+
+        #expect(restored == value)
+    }
+
     @Test("Double special values")
     func doubleSpecialValues() {
         // Zero
@@ -93,6 +111,24 @@ struct Binary32Tests {
     func floatCanonicalInitBigEndian() {
         let value: Float = 3.14
         let bytes = [UInt8](value, endianness: .big)
+        let restored = Float(bytes: bytes, endianness: .big)
+
+        #expect(restored == value)
+    }
+
+    @Test("Float direct bytes method")
+    func floatDirectBytes() {
+        let value: Float = 2.71828
+        let bytes = value.bytes()
+        let restored = Float(bytes: bytes)
+
+        #expect(restored == value)
+    }
+
+    @Test("Float direct bytes big-endian")
+    func floatDirectBytesBigEndian() {
+        let value: Float = 1.41421
+        let bytes = value.bytes(endianness: .big)
         let restored = Float(bytes: bytes, endianness: .big)
 
         #expect(restored == value)
