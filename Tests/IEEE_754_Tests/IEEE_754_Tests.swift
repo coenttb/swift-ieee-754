@@ -11,7 +11,7 @@ struct Binary64Tests {
     @Test("Double round-trip serialization")
     func doubleRoundTrip() {
         let original: Double = 3.14159265358979323846
-        let bytes = [UInt8](original)
+        let bytes = original.ieee754.bytes()
         let restored = bytes.ieee754.asDouble()
 
         #expect(restored == original)
@@ -20,7 +20,7 @@ struct Binary64Tests {
     @Test("Double big-endian serialization")
     func doubleBigEndian() {
         let value: Double = 3.14159
-        let bytes = [UInt8](value, endianness: .big)
+        let bytes = value.ieee754.bytes(endianness: .big)
         let restored = bytes.ieee754.asDouble(endianness: .big)
 
         #expect(restored == value)
@@ -29,15 +29,15 @@ struct Binary64Tests {
     @Test("Double special values")
     func doubleSpecialValues() {
         // Zero
-        let zero = [UInt8](0.0)
+        let zero = (0.0 as Double).ieee754.bytes()
         #expect(zero.ieee754.asDouble() == 0.0)
 
         // Infinity
-        let inf = [UInt8](Double.infinity)
+        let inf = Double.infinity.ieee754.bytes()
         #expect(inf.ieee754.asDouble() == Double.infinity)
 
         // NaN
-        let nan = [UInt8](Double.nan)
+        let nan = Double.nan.ieee754.bytes()
         #expect(nan.ieee754.asDouble()?.isNaN == true)
     }
 }
@@ -47,7 +47,7 @@ struct Binary32Tests {
     @Test("Float round-trip serialization")
     func floatRoundTrip() {
         let original: Float = 3.14159
-        let bytes = [UInt8](original)
+        let bytes = original.ieee754.bytes()
         let restored = bytes.ieee754.asFloat()
 
         #expect(restored == original)
@@ -56,7 +56,7 @@ struct Binary32Tests {
     @Test("Float big-endian serialization")
     func floatBigEndian() {
         let value: Float = 3.14
-        let bytes = [UInt8](value, endianness: .big)
+        let bytes = value.ieee754.bytes(endianness: .big)
         let restored = bytes.ieee754.asFloat(endianness: .big)
 
         #expect(restored == value)
@@ -65,15 +65,15 @@ struct Binary32Tests {
     @Test("Float special values")
     func floatSpecialValues() {
         // Zero
-        let zero = [UInt8](Float(0.0))
+        let zero = Float(0.0).ieee754.bytes()
         #expect(zero.ieee754.asFloat() == 0.0)
 
         // Infinity
-        let inf = [UInt8](Float.infinity)
+        let inf = Float.infinity.ieee754.bytes()
         #expect(inf.ieee754.asFloat() == Float.infinity)
 
         // NaN
-        let nan = [UInt8](Float.nan)
+        let nan = Float.nan.ieee754.bytes()
         #expect(nan.ieee754.asFloat()?.isNaN == true)
     }
 }
