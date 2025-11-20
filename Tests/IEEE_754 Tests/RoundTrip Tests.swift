@@ -4,6 +4,7 @@
 // Comprehensive round-trip conversion tests
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("IEEE 754 - Double Round-trip Conversions")

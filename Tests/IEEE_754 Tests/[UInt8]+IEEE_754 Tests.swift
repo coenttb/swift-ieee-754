@@ -4,6 +4,7 @@
 // Tests for [UInt8] IEEE 754 extensions
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("[UInt8]+IEEE_754 - Canonical Double serialization")

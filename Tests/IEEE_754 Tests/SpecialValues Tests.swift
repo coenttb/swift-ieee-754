@@ -4,6 +4,7 @@
 // Tests for IEEE 754 special values
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("IEEE 754 - Double Special Values")

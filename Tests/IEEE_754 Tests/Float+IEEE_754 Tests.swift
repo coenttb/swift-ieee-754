@@ -4,6 +4,7 @@
 // Tests for Float IEEE 754 extensions
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("Float+IEEE_754 - Direct bytes() method")

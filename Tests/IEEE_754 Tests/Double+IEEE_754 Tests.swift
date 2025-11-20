@@ -4,6 +4,7 @@
 // Tests for Double IEEE 754 extensions
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("Double+IEEE_754 - Direct bytes() method")

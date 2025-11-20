@@ -4,6 +4,7 @@
 // Tests for little-endian and big-endian byte order handling
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("IEEE 754 - Double Endianness")

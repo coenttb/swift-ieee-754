@@ -4,6 +4,7 @@
 // Tests for IEEE 754 Binary32 (authoritative implementation)
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("IEEE_754.Binary32 - Constants")
@@ -37,9 +38,7 @@ struct Binary32ConstantsTests {
     }
 
     @Test func `bit layout sums to 32`() {
-        let total = IEEE_754.Binary32.signBits +
-                   IEEE_754.Binary32.exponentBits +
-                   IEEE_754.Binary32.significandBits
+        let total = IEEE_754.Binary32.signBits + IEEE_754.Binary32.exponentBits + IEEE_754.Binary32.significandBits
         #expect(total == 32, "Sign + exponent + significand bits should equal 32")
     }
 }
