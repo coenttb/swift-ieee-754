@@ -3,7 +3,9 @@
 //
 // Tests for [Float] array extensions
 
+import StandardsTestSupport
 import Testing
+
 @testable import IEEE_754
 
 @Suite("Array<Float> - Deserialization")
@@ -45,6 +47,13 @@ struct FloatArrayTests {
     func invalidByteCount() {
         // 3 bytes - not a multiple of 4
         let bytes: [UInt8] = [0x01, 0x02, 0x03]
+        let floats = [Float](bytes: bytes)
+        #expect(floats == nil)
+    }
+
+    @Test(arguments: [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 99])
+    func `invalid byte counts return nil`(byteCount: Int) {
+        let bytes = [UInt8](repeating: 0, count: byteCount)
         let floats = [Float](bytes: bytes)
         #expect(floats == nil)
     }
@@ -146,6 +155,195 @@ struct FloatArrayTests {
             #expect(deserialized[3] == -0.0)
             #expect(deserialized[4] == .infinity)
             #expect(deserialized[5] == -.infinity)
+        }
+    }
+
+    @Test("Subnormal values preserved")
+    func subnormalValues() {
+        let values: [Float] = [
+            .leastNonzeroMagnitude,
+            -.leastNonzeroMagnitude,
+            .leastNormalMagnitude,
+            -.leastNormalMagnitude,
+        ]
+
+        var bytes: [UInt8] = []
+        for value in values {
+            bytes += value.bytes()
+        }
+
+        let deserialized = [Float](bytes: bytes)
+        #expect(deserialized != nil)
+        #expect(deserialized?.count == 4)
+        #expect(deserialized?[0] == .leastNonzeroMagnitude)
+        #expect(deserialized?[1] == -.leastNonzeroMagnitude)
+        #expect(deserialized?[2] == .leastNormalMagnitude)
+        #expect(deserialized?[3] == -.leastNormalMagnitude)
+    }
+
+    @Test("Extreme values preserved")
+    func extremeValues() {
+        let values: [Float] = [
+            .greatestFiniteMagnitude,
+            -.greatestFiniteMagnitude,
+            Float.pi,
+            -Float.pi,
+        ]
+
+        var bytes: [UInt8] = []
+        for value in values {
+            bytes += value.bytes()
+        }
+
+        let deserialized = [Float](bytes: bytes)
+        #expect(deserialized != nil)
+        #expect(deserialized?.count == 4)
+        #expect(deserialized?[0] == .greatestFiniteMagnitude)
+        #expect(deserialized?[1] == -.greatestFiniteMagnitude)
+        #expect(deserialized?[2] == Float.pi)
+        #expect(deserialized?[3] == -Float.pi)
+    }
+
+    @Test("Mixed endianness arrays are independent")
+    func mixedEndianness() {
+        let values: [Float] = [1.0, 2.0, 3.0]
+
+        var littleEndianBytes: [UInt8] = []
+        var bigEndianBytes: [UInt8] = []
+
+        for value in values {
+            littleEndianBytes += value.bytes(endianness: .little)
+            bigEndianBytes += value.bytes(endianness: .big)
+        }
+
+        let littleDeserialize = [Float](bytes: littleEndianBytes, endianness: .little)
+        let bigDeserialize = [Float](bytes: bigEndianBytes, endianness: .big)
+
+        #expect(littleDeserialize == values)
+        #expect(bigDeserialize == values)
+
+        // Cross-endianness should not work
+        let wrongLittle = [Float](bytes: bigEndianBytes, endianness: .little)
+        let wrongBig = [Float](bytes: littleEndianBytes, endianness: .big)
+
+        #expect(wrongLittle != values)
+        #expect(wrongBig != values)
+    }
+
+    @Test("Array from collection types")
+    func collectionTypes() {
+        let bytes: [UInt8] = [0xD0, 0x0F, 0x49, 0x40]
+
+        // Test with different collection types
+        let fromArray = [Float](bytes: bytes)
+        let fromArraySlice = [Float](bytes: bytes[0...])
+        let fromContiguousArray = [Float](bytes: ContiguousArray(bytes))
+
+        #expect(fromArray != nil)
+        #expect(fromArraySlice != nil)
+        #expect(fromContiguousArray != nil)
+
+        #expect(fromArray?[0] == 3.14159)
+        #expect(fromArraySlice?[0] == 3.14159)
+        #expect(fromContiguousArray?[0] == 3.14159)
+    }
+
+    @Test("Powers of 2 arrays")
+    func powersOfTwo() {
+        let values: [Float] = [1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+
+        var bytes: [UInt8] = []
+        for value in values {
+            bytes += value.bytes()
+        }
+
+        let deserialized = [Float](bytes: bytes)
+        #expect(deserialized == values)
+    }
+}
+
+// MARK: - Performance Tests
+
+extension `Performance Tests` {
+    @Suite
+    struct `Array<Float> - Performance` {
+        @Test(.timed(threshold: .milliseconds(50)))
+        func `deserialize 1000 Floats from bytes`() {
+            var bytes: [UInt8] = []
+            for i in 0..<1_000 {
+                bytes += Float(i).bytes()
+            }
+
+            _ = [Float](bytes: bytes)
+        }
+
+        @Test(.timed(threshold: .milliseconds(100)))
+        func `serialize and deserialize 1000 Floats`() {
+            let values = (0..<1_000).map { Float($0) * 3.14159 }
+
+            var bytes: [UInt8] = []
+            for value in values {
+                bytes += value.bytes()
+            }
+
+            let deserialized = [Float](bytes: bytes)
+            #expect(deserialized != nil)
+        }
+
+        @Test(.timed(threshold: .milliseconds(200)))
+        func `round-trip 10000 random Floats through arrays`() {
+            let values = (0..<10_000).map { _ in Float.random(in: -1e30...1e30) }
+
+            var bytes: [UInt8] = []
+            for value in values {
+                bytes += value.bytes()
+            }
+
+            let deserialized = [Float](bytes: bytes)
+            #expect(deserialized?.count == 10_000)
+        }
+
+        @Test(.timed(threshold: .milliseconds(5)))
+        func `deserialize 100 Floats repeatedly`() {
+            var bytes: [UInt8] = []
+            for i in 0..<100 {
+                bytes += Float(i).bytes()
+            }
+
+            for _ in 0..<100 {
+                _ = [Float](bytes: bytes)
+            }
+        }
+
+        @Test(.timed(threshold: .milliseconds(10)))
+        func `alternating endianness 1000 values`() {
+            let value: Float = 3.14159
+
+            for i in 0..<1_000 {
+                let endianness: [UInt8].Endianness = i % 2 == 0 ? .little : .big
+                let bytes = value.bytes(endianness: endianness)
+                _ = [Float](bytes: [bytes].flatMap { $0 }, endianness: endianness)
+            }
+        }
+
+        @Test(.timed(threshold: .milliseconds(3)))
+        func `special values array 1000 times`() {
+            let specialValues: [Float] = [
+                0.0, -0.0,
+                .infinity, -.infinity,
+                .leastNonzeroMagnitude,
+                .leastNormalMagnitude,
+                .greatestFiniteMagnitude,
+            ]
+
+            var bytes: [UInt8] = []
+            for value in specialValues {
+                bytes += value.bytes()
+            }
+
+            for _ in 0..<1_000 {
+                _ = [Float](bytes: bytes)
+            }
         }
     }
 }
