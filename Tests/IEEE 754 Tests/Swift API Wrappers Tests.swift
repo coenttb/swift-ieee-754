@@ -21,15 +21,26 @@ struct SwiftRoundingControlTests {
     }
 
     @Test func setRoundingMode() throws {
+        // Save original mode
+        let originalMode = IEEE_754.RoundingControl.get()
+        defer {
+            // Always restore original mode, even if test fails
+            try? IEEE_754.RoundingControl.set(originalMode)
+        }
+
         try IEEE_754.RoundingControl.set(.upward)
         let mode = IEEE_754.RoundingControl.get()
         #expect(mode == .upward)
-
-        // Restore default
-        try IEEE_754.RoundingControl.set(.toNearest)
     }
 
     @Test func withModeScoping() throws {
+        // Save original mode
+        let originalMode = IEEE_754.RoundingControl.get()
+        defer {
+            // Always restore original mode, even if test fails
+            try? IEEE_754.RoundingControl.set(originalMode)
+        }
+
         // Set a specific mode first
         try IEEE_754.RoundingControl.set(.toNearest)
 

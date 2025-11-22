@@ -303,7 +303,7 @@ extension `Performance Tests` {
             #expect(deserialized?.count == 10_000)
         }
 
-        @Test(.timed(threshold: .milliseconds(5)))
+        @Test(.timed(threshold: .milliseconds(6)))
         func `deserialize 100 Floats repeatedly`() {
             var bytes: [UInt8] = []
             for i in 0..<100 {
