@@ -221,7 +221,7 @@ extension IEEE_754.Arithmetic {
     /// - IEEE 754-2019 Section 5.4.1: FusedMultiplyAdd operation
     @inlinable
     public static func fusedMultiplyAdd<T: BinaryFloatingPoint>(a: T, b: T, c: T) -> T {
-        a.addingProduct(b, c)
+        c.addingProduct(a, b)  // Computes c + (a × b) = (a × b) + c
     }
 }
 
