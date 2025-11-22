@@ -444,14 +444,14 @@ extension IEEE_754.Classification {
     /// ```
     public enum NumberClass: Sendable, Equatable {
         /// NaN (Not a Number)
-        case nan(NaNKind)
+        case nan(NaN)
         /// Positive value
-        case positive(FiniteKind)
+        case positive(Finite)
         /// Negative value
-        case negative(FiniteKind)
+        case negative(Finite)
 
         /// Kind of NaN
-        public enum NaNKind: Sendable, Equatable {
+        public enum NaN: Sendable, Equatable {
             /// Signaling NaN (raises exception on most operations)
             case signaling
             /// Quiet NaN (propagates through operations)
@@ -459,7 +459,7 @@ extension IEEE_754.Classification {
         }
 
         /// Kind of finite or infinite value
-        public enum FiniteKind: Sendable, Equatable {
+        public enum Finite: Sendable, Equatable {
             /// Infinity (±∞)
             case infinity
             /// Normal number (normalized with implicit leading 1)
@@ -491,7 +491,7 @@ extension IEEE_754.Classification {
             return .nan(value.isSignalingNaN ? .signaling : .quiet)
         }
 
-        let kind: NumberClass.FiniteKind
+        let kind: NumberClass.Finite
         if value.isInfinite {
             kind = .infinity
         } else if value.isZero {
@@ -524,7 +524,7 @@ extension IEEE_754.Classification {
             return .nan(value.isSignalingNaN ? .signaling : .quiet)
         }
 
-        let kind: NumberClass.FiniteKind
+        let kind: NumberClass.Finite
         if value.isInfinite {
             kind = .infinity
         } else if value.isZero {

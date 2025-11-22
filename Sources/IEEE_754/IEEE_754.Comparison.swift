@@ -40,6 +40,106 @@ extension IEEE_754 {
     public enum Comparison {}
 }
 
+// MARK: - Hierarchical Comparison Predicate Enum
+
+extension IEEE_754.Comparison {
+    /// IEEE 754 Comparison Predicate
+    ///
+    /// Hierarchical structure for comparison operations with better pattern matching.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// let result = IEEE_754.Comparison.compare(lhs, rhs, using: .ordering(.less(orEqual: true)))
+    ///
+    /// switch predicate {
+    /// case .equality(.equal):
+    ///     // ==
+    /// case .ordering(.less(let orEqual)):
+    ///     // < or <=
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    /// - IEEE 754-2019 Section 5.6: Details of comparison predicates
+    public enum Predicate: Sendable, Equatable {
+        /// Equality comparison
+        case equality(EqualityMode)
+        /// Ordering comparison
+        case ordering(OrderingMode)
+
+        /// Equality mode
+        public enum EqualityMode: Sendable, Equatable {
+            /// Equal (==)
+            case equal
+            /// Not equal (!=)
+            case notEqual
+        }
+
+        /// Ordering mode
+        public enum OrderingMode: Sendable, Equatable {
+            /// Less than, optionally or equal
+            case less(orEqual: Bool)
+            /// Greater than, optionally or equal
+            case greater(orEqual: Bool)
+        }
+    }
+
+    /// Unified comparison operation for Double values
+    ///
+    /// Implements all standard IEEE 754 comparison predicates through a single interface.
+    ///
+    /// - Parameters:
+    ///   - lhs: Left-hand value
+    ///   - rhs: Right-hand value
+    ///   - predicate: The comparison predicate to use
+    /// - Returns: The comparison result
+    @inlinable
+    public static func compare(_ lhs: Double, _ rhs: Double, using predicate: Predicate) -> Bool {
+        switch predicate {
+        case .equality(.equal):
+            return lhs == rhs
+        case .equality(.notEqual):
+            return lhs != rhs
+        case .ordering(.less(orEqual: false)):
+            return lhs < rhs
+        case .ordering(.less(orEqual: true)):
+            return lhs <= rhs
+        case .ordering(.greater(orEqual: false)):
+            return lhs > rhs
+        case .ordering(.greater(orEqual: true)):
+            return lhs >= rhs
+        }
+    }
+
+    /// Unified comparison operation for Float values
+    ///
+    /// Implements all standard IEEE 754 comparison predicates through a single interface.
+    ///
+    /// - Parameters:
+    ///   - lhs: Left-hand value
+    ///   - rhs: Right-hand value
+    ///   - predicate: The comparison predicate to use
+    /// - Returns: The comparison result
+    @inlinable
+    public static func compare(_ lhs: Float, _ rhs: Float, using predicate: Predicate) -> Bool {
+        switch predicate {
+        case .equality(.equal):
+            return lhs == rhs
+        case .equality(.notEqual):
+            return lhs != rhs
+        case .ordering(.less(orEqual: false)):
+            return lhs < rhs
+        case .ordering(.less(orEqual: true)):
+            return lhs <= rhs
+        case .ordering(.greater(orEqual: false)):
+            return lhs > rhs
+        case .ordering(.greater(orEqual: true)):
+            return lhs >= rhs
+        }
+    }
+}
+
 // MARK: - Double Comparison Operations
 
 extension IEEE_754.Comparison {
@@ -62,7 +162,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isEqual(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs == rhs
+        compare(lhs, rhs, using: .equality(.equal))
     }
 
     /// Quiet inequality comparison - IEEE 754 `compareQuietNotEqual`
@@ -82,7 +182,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isNotEqual(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs != rhs
+        compare(lhs, rhs, using: .equality(.notEqual))
     }
 
     /// Quiet less than comparison - IEEE 754 `compareQuietLess`
@@ -102,7 +202,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isLess(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs < rhs
+        compare(lhs, rhs, using: .ordering(.less(orEqual: false)))
     }
 
     /// Quiet less than or equal comparison - IEEE 754 `compareQuietLessEqual`
@@ -122,7 +222,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isLessEqual(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs <= rhs
+        compare(lhs, rhs, using: .ordering(.less(orEqual: true)))
     }
 
     /// Quiet greater than comparison - IEEE 754 `compareQuietGreater`
@@ -141,7 +241,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isGreater(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs > rhs
+        compare(lhs, rhs, using: .ordering(.greater(orEqual: false)))
     }
 
     /// Quiet greater than or equal comparison - IEEE 754 `compareQuietGreaterEqual`
@@ -161,7 +261,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isGreaterEqual(_ lhs: Double, _ rhs: Double) -> Bool {
-        lhs >= rhs
+        compare(lhs, rhs, using: .ordering(.greater(orEqual: true)))
     }
 
     /// Total order predicate - IEEE 754 `totalOrder`
@@ -231,7 +331,7 @@ extension IEEE_754.Comparison {
     /// ```
     @inlinable
     public static func isEqual(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs == rhs
+        compare(lhs, rhs, using: .equality(.equal))
     }
 
     /// Quiet inequality comparison - IEEE 754 `compareQuietNotEqual`
@@ -244,7 +344,7 @@ extension IEEE_754.Comparison {
     /// - Returns: true if values are not equal
     @inlinable
     public static func isNotEqual(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs != rhs
+        compare(lhs, rhs, using: .equality(.notEqual))
     }
 
     /// Quiet less than comparison - IEEE 754 `compareQuietLess`
@@ -257,7 +357,7 @@ extension IEEE_754.Comparison {
     /// - Returns: true if lhs < rhs
     @inlinable
     public static func isLess(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs < rhs
+        compare(lhs, rhs, using: .ordering(.less(orEqual: false)))
     }
 
     /// Quiet less than or equal comparison - IEEE 754 `compareQuietLessEqual`
@@ -270,7 +370,7 @@ extension IEEE_754.Comparison {
     /// - Returns: true if lhs <= rhs
     @inlinable
     public static func isLessEqual(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs <= rhs
+        compare(lhs, rhs, using: .ordering(.less(orEqual: true)))
     }
 
     /// Quiet greater than comparison - IEEE 754 `compareQuietGreater`
@@ -283,7 +383,7 @@ extension IEEE_754.Comparison {
     /// - Returns: true if lhs > rhs
     @inlinable
     public static func isGreater(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs > rhs
+        compare(lhs, rhs, using: .ordering(.greater(orEqual: false)))
     }
 
     /// Quiet greater than or equal comparison - IEEE 754 `compareQuietGreaterEqual`
@@ -296,7 +396,7 @@ extension IEEE_754.Comparison {
     /// - Returns: true if lhs >= rhs
     @inlinable
     public static func isGreaterEqual(_ lhs: Float, _ rhs: Float) -> Bool {
-        lhs >= rhs
+        compare(lhs, rhs, using: .ordering(.greater(orEqual: true)))
     }
 
     /// Total order predicate - IEEE 754 `totalOrder`

@@ -386,3 +386,71 @@ extension RoundingTests {
         #expect(negativeZero.sign == .minus)
     }
 }
+
+// MARK: - Hierarchical Direction API Tests
+
+extension RoundingTests {
+    @Test("apply with Direction enum - towardInfinity(.negative) is floor")
+    func applyDirectionFloor() {
+        #expect(IEEE_754.Rounding.apply(3.7, direction: .towardInfinity(.negative)) == 3.0)
+        #expect(IEEE_754.Rounding.apply(-3.7, direction: .towardInfinity(.negative)) == -4.0)
+        #expect(IEEE_754.Rounding.apply(Float(3.7), direction: .towardInfinity(.negative)) == 3.0)
+    }
+
+    @Test("apply with Direction enum - towardInfinity(.positive) is ceil")
+    func applyDirectionCeil() {
+        #expect(IEEE_754.Rounding.apply(3.2, direction: .towardInfinity(.positive)) == 4.0)
+        #expect(IEEE_754.Rounding.apply(-3.2, direction: .towardInfinity(.positive)) == -3.0)
+        #expect(IEEE_754.Rounding.apply(Float(3.2), direction: .towardInfinity(.positive)) == 4.0)
+    }
+
+    @Test("apply with Direction enum - towardZero is trunc")
+    func applyDirectionTrunc() {
+        #expect(IEEE_754.Rounding.apply(3.7, direction: .towardZero) == 3.0)
+        #expect(IEEE_754.Rounding.apply(-3.7, direction: .towardZero) == -3.0)
+        #expect(IEEE_754.Rounding.apply(Float(3.7), direction: .towardZero) == 3.0)
+    }
+
+    @Test("apply with Direction enum - toNearest(.toEven) is round")
+    func applyDirectionRoundToEven() {
+        #expect(IEEE_754.Rounding.apply(3.5, direction: .toNearest(.toEven)) == 4.0)
+        #expect(IEEE_754.Rounding.apply(4.5, direction: .toNearest(.toEven)) == 4.0)
+        #expect(IEEE_754.Rounding.apply(Float(3.5), direction: .toNearest(.toEven)) == 4.0)
+    }
+
+    @Test("apply with Direction enum - toNearest(.awayFromZero) is roundAwayFromZero")
+    func applyDirectionRoundAwayFromZero() {
+        #expect(IEEE_754.Rounding.apply(3.5, direction: .toNearest(.awayFromZero)) == 4.0)
+        #expect(IEEE_754.Rounding.apply(4.5, direction: .toNearest(.awayFromZero)) == 5.0)
+        #expect(IEEE_754.Rounding.apply(Float(3.5), direction: .toNearest(.awayFromZero)) == 4.0)
+    }
+
+    @Test("Direction enum pattern matching works correctly")
+    func directionPatternMatching() {
+        let directions: [IEEE_754.Rounding.Direction] = [
+            .towardInfinity(.negative),
+            .towardInfinity(.positive),
+            .towardZero,
+            .toNearest(.toEven),
+            .toNearest(.awayFromZero)
+        ]
+
+        for direction in directions {
+            let result = IEEE_754.Rounding.apply(3.5, direction: direction)
+            #expect(result.isFinite)
+
+            switch direction {
+            case .towardInfinity(.negative):
+                #expect(result == 3.0)
+            case .towardInfinity(.positive):
+                #expect(result == 4.0)
+            case .towardZero:
+                #expect(result == 3.0)
+            case .toNearest(.toEven):
+                #expect(result == 4.0)
+            case .toNearest(.awayFromZero):
+                #expect(result == 4.0)
+            }
+        }
+    }
+}

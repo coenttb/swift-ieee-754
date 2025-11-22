@@ -46,6 +46,111 @@ extension IEEE_754 {
     public enum MinMax {}
 }
 
+// MARK: - Hierarchical Min/Max Operation Enum
+
+extension IEEE_754.MinMax {
+    /// IEEE 754 Min/Max Operation
+    ///
+    /// Hierarchical structure for all 8 IEEE 754 min/max operation variants.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// let result = IEEE_754.MinMax.apply(x, y, operation: .standard(.minimum))
+    ///
+    /// switch operation {
+    /// case .standard(.minimum):
+    ///     // Propagates NaN
+    /// case .number(.minimum):
+    ///     // Prefers numbers over NaN
+    /// case .magnitude(.minimum(preferNumber: false)):
+    ///     // By magnitude, propagates NaN
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    /// - IEEE 754-2019 Section 5.3.1: Minimum and maximum operations
+    /// - IEEE 754-2019 Section 9.6: Minimum and maximum magnitude operations
+    public enum Operation: Sendable, Equatable {
+        /// Standard min/max (propagates NaN)
+        case standard(Mode)
+        /// Number min/max (prefers numbers over NaN)
+        case number(Mode)
+        /// Magnitude min/max (by absolute value)
+        case magnitude(Mode, preferNumber: Bool)
+
+        /// Min or Max mode
+        public enum Mode: Sendable, Equatable {
+            /// Select minimum value
+            case minimum
+            /// Select maximum value
+            case maximum
+        }
+    }
+
+    /// Unified min/max operation for Double values
+    ///
+    /// Implements all 8 IEEE 754 min/max variants through a single interface.
+    ///
+    /// - Parameters:
+    ///   - x: First value
+    ///   - y: Second value
+    ///   - operation: The operation to perform
+    /// - Returns: The result based on the operation
+    @inlinable
+    public static func apply(_ x: Double, _ y: Double, operation: Operation) -> Double {
+        switch operation {
+        case .standard(.minimum):
+            return minimum(x, y)
+        case .standard(.maximum):
+            return maximum(x, y)
+        case .number(.minimum):
+            return minimumNumber(x, y)
+        case .number(.maximum):
+            return maximumNumber(x, y)
+        case .magnitude(.minimum, preferNumber: false):
+            return minimumMagnitude(x, y)
+        case .magnitude(.maximum, preferNumber: false):
+            return maximumMagnitude(x, y)
+        case .magnitude(.minimum, preferNumber: true):
+            return minimumMagnitudeNumber(x, y)
+        case .magnitude(.maximum, preferNumber: true):
+            return maximumMagnitudeNumber(x, y)
+        }
+    }
+
+    /// Unified min/max operation for Float values
+    ///
+    /// Implements all 8 IEEE 754 min/max variants through a single interface.
+    ///
+    /// - Parameters:
+    ///   - x: First value
+    ///   - y: Second value
+    ///   - operation: The operation to perform
+    /// - Returns: The result based on the operation
+    @inlinable
+    public static func apply(_ x: Float, _ y: Float, operation: Operation) -> Float {
+        switch operation {
+        case .standard(.minimum):
+            return minimum(x, y)
+        case .standard(.maximum):
+            return maximum(x, y)
+        case .number(.minimum):
+            return minimumNumber(x, y)
+        case .number(.maximum):
+            return maximumNumber(x, y)
+        case .magnitude(.minimum, preferNumber: false):
+            return minimumMagnitude(x, y)
+        case .magnitude(.maximum, preferNumber: false):
+            return maximumMagnitude(x, y)
+        case .magnitude(.minimum, preferNumber: true):
+            return minimumMagnitudeNumber(x, y)
+        case .magnitude(.maximum, preferNumber: true):
+            return maximumMagnitudeNumber(x, y)
+        }
+    }
+}
+
 // MARK: - Double Min/Max Operations
 
 extension IEEE_754.MinMax {

@@ -43,6 +43,108 @@ extension IEEE_754 {
     public enum Payload {}
 }
 
+// MARK: - Hierarchical NaN Type Enum
+
+extension IEEE_754.Payload {
+    /// IEEE 754 NaN Type
+    ///
+    /// Hierarchical structure for NaN types with associated payload values.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// let nan = IEEE_754.Payload.encode(.quiet(payload: 0x1234))
+    ///
+    /// switch nanType {
+    /// case .quiet(let payload):
+    ///     // Handle quiet NaN with payload
+    /// case .signaling(let payload):
+    ///     // Handle signaling NaN with payload
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    /// - IEEE 754-2019 Section 6.2: NaN propagation and operations
+    public enum NaNType: Sendable, Equatable {
+        /// Quiet NaN with payload
+        case quiet(payload: UInt64)
+        /// Signaling NaN with payload
+        case signaling(payload: UInt64)
+    }
+
+    /// Encode a NaN value from NaNType for Double
+    ///
+    /// Creates a NaN with the specified type and payload.
+    ///
+    /// - Parameter type: The NaN type with payload
+    /// - Returns: A NaN value
+    @inlinable
+    public static func encode(_ type: NaNType) -> Double {
+        switch type {
+        case .quiet(let payload):
+            return encodeQuietNaN(payload: payload)
+        case .signaling(let payload):
+            return encodeSignalingNaN(payload: payload)
+        }
+    }
+
+    /// Encode a NaN value from NaNType for Float
+    ///
+    /// Creates a NaN with the specified type and payload.
+    ///
+    /// - Parameter type: The NaN type with payload
+    /// - Returns: A NaN value
+    @inlinable
+    public static func encode(_ type: NaNType) -> Float {
+        switch type {
+        case .quiet(let payload):
+            return encodeQuietNaN(payload: UInt32(payload & 0x003F_FFFF))
+        case .signaling(let payload):
+            return encodeSignalingNaN(payload: UInt32(payload & 0x003F_FFFF))
+        }
+    }
+
+    /// Decode a Double NaN value to NaNType
+    ///
+    /// Extracts the type and payload from a NaN value.
+    ///
+    /// - Parameter value: The value to decode
+    /// - Returns: The NaN type with payload, or nil if not NaN
+    @inlinable
+    public static func decode(_ value: Double) -> NaNType? {
+        guard value.isNaN else { return nil }
+
+        if let payload = extract(from: value) {
+            if value.isSignalingNaN {
+                return .signaling(payload: payload)
+            } else {
+                return .quiet(payload: payload)
+            }
+        }
+        return nil
+    }
+
+    /// Decode a Float NaN value to NaNType
+    ///
+    /// Extracts the type and payload from a NaN value.
+    ///
+    /// - Parameter value: The value to decode
+    /// - Returns: The NaN type with payload, or nil if not NaN
+    @inlinable
+    public static func decode(_ value: Float) -> NaNType? {
+        guard value.isNaN else { return nil }
+
+        if let payload = extract(from: value) {
+            if value.isSignalingNaN {
+                return .signaling(payload: UInt64(payload))
+            } else {
+                return .quiet(payload: UInt64(payload))
+            }
+        }
+        return nil
+    }
+}
+
 // MARK: - Double Payload Operations
 
 extension IEEE_754.Payload {

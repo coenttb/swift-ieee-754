@@ -286,3 +286,77 @@ struct FloatTotalOrderMagTests {
         #expect(!IEEE_754.Comparison.totalOrderMag(Float(-3.14), Float(2.71)), "|-3.14| not < |2.71|")
     }
 }
+
+// MARK: - Hierarchical Predicate API Tests
+
+@Suite("IEEE_754.Comparison - Hierarchical Predicate API")
+struct ComparisonPredicateTests {
+    @Test("compare with Predicate enum - equality(.equal)")
+    func compareEqual() {
+        #expect(IEEE_754.Comparison.compare(3.14, 3.14, using: .equality(.equal)))
+        #expect(!IEEE_754.Comparison.compare(3.14, 2.71, using: .equality(.equal)))
+        #expect(IEEE_754.Comparison.compare(Float(3.14), Float(3.14), using: .equality(.equal)))
+    }
+
+    @Test("compare with Predicate enum - equality(.notEqual)")
+    func compareNotEqual() {
+        #expect(IEEE_754.Comparison.compare(3.14, 2.71, using: .equality(.notEqual)))
+        #expect(!IEEE_754.Comparison.compare(3.14, 3.14, using: .equality(.notEqual)))
+        #expect(IEEE_754.Comparison.compare(Float(3.14), Float(2.71), using: .equality(.notEqual)))
+    }
+
+    @Test("compare with Predicate enum - ordering(.less(orEqual: false))")
+    func compareLess() {
+        #expect(IEEE_754.Comparison.compare(2.71, 3.14, using: .ordering(.less(orEqual: false))))
+        #expect(!IEEE_754.Comparison.compare(3.14, 2.71, using: .ordering(.less(orEqual: false))))
+        #expect(!IEEE_754.Comparison.compare(3.14, 3.14, using: .ordering(.less(orEqual: false))))
+    }
+
+    @Test("compare with Predicate enum - ordering(.less(orEqual: true))")
+    func compareLessEqual() {
+        #expect(IEEE_754.Comparison.compare(2.71, 3.14, using: .ordering(.less(orEqual: true))))
+        #expect(IEEE_754.Comparison.compare(3.14, 3.14, using: .ordering(.less(orEqual: true))))
+        #expect(!IEEE_754.Comparison.compare(3.14, 2.71, using: .ordering(.less(orEqual: true))))
+    }
+
+    @Test("compare with Predicate enum - ordering(.greater(orEqual: false))")
+    func compareGreater() {
+        #expect(IEEE_754.Comparison.compare(3.14, 2.71, using: .ordering(.greater(orEqual: false))))
+        #expect(!IEEE_754.Comparison.compare(2.71, 3.14, using: .ordering(.greater(orEqual: false))))
+        #expect(!IEEE_754.Comparison.compare(3.14, 3.14, using: .ordering(.greater(orEqual: false))))
+    }
+
+    @Test("compare with Predicate enum - ordering(.greater(orEqual: true))")
+    func compareGreaterEqual() {
+        #expect(IEEE_754.Comparison.compare(3.14, 2.71, using: .ordering(.greater(orEqual: true))))
+        #expect(IEEE_754.Comparison.compare(3.14, 3.14, using: .ordering(.greater(orEqual: true))))
+        #expect(!IEEE_754.Comparison.compare(2.71, 3.14, using: .ordering(.greater(orEqual: true))))
+    }
+
+    @Test("Predicate enum pattern matching works correctly")
+    func predicatePatternMatching() {
+        let predicates: [IEEE_754.Comparison.Predicate] = [
+            .equality(.equal),
+            .equality(.notEqual),
+            .ordering(.less(orEqual: false)),
+            .ordering(.less(orEqual: true)),
+            .ordering(.greater(orEqual: false)),
+            .ordering(.greater(orEqual: true))
+        ]
+
+        for predicate in predicates {
+            let result = IEEE_754.Comparison.compare(3.0, 3.0, using: predicate)
+
+            switch predicate {
+            case .equality(.equal):
+                #expect(result == true)
+            case .equality(.notEqual):
+                #expect(result == false)
+            case .ordering(.less(orEqual: let orEqual)):
+                #expect(result == orEqual)
+            case .ordering(.greater(orEqual: let orEqual)):
+                #expect(result == orEqual)
+            }
+        }
+    }
+}

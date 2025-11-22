@@ -219,3 +219,82 @@ struct FloatMaximumMagnitudeTests {
         #expect(IEEE_754.MinMax.maximumMagnitude(Float(-3.14), Float(2.71)) == Float(-3.14), "Select by magnitude")
     }
 }
+
+// MARK: - Hierarchical Operation API Tests
+
+@Suite("IEEE_754.MinMax - Hierarchical Operation API")
+struct MinMaxOperationTests {
+    @Test("apply with Operation enum - standard(.minimum)")
+    func applyStandardMinimum() {
+        #expect(IEEE_754.MinMax.apply(3.14, 2.71, operation: .standard(.minimum)) == 2.71)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .standard(.minimum)).isNaN)
+    }
+
+    @Test("apply with Operation enum - standard(.maximum)")
+    func applyStandardMaximum() {
+        #expect(IEEE_754.MinMax.apply(3.14, 2.71, operation: .standard(.maximum)) == 3.14)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .standard(.maximum)).isNaN)
+    }
+
+    @Test("apply with Operation enum - number(.minimum)")
+    func applyNumberMinimum() {
+        #expect(IEEE_754.MinMax.apply(3.14, 2.71, operation: .number(.minimum)) == 2.71)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .number(.minimum)) == 3.14)
+    }
+
+    @Test("apply with Operation enum - number(.maximum)")
+    func applyNumberMaximum() {
+        #expect(IEEE_754.MinMax.apply(3.14, 2.71, operation: .number(.maximum)) == 3.14)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .number(.maximum)) == 3.14)
+    }
+
+    @Test("apply with Operation enum - magnitude(.minimum, preferNumber: false)")
+    func applyMagnitudeMinimum() {
+        #expect(IEEE_754.MinMax.apply(3.14, -2.71, operation: .magnitude(.minimum, preferNumber: false)) == -2.71)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .magnitude(.minimum, preferNumber: false)).isNaN)
+    }
+
+    @Test("apply with Operation enum - magnitude(.maximum, preferNumber: false)")
+    func applyMagnitudeMaximum() {
+        #expect(IEEE_754.MinMax.apply(3.14, -2.71, operation: .magnitude(.maximum, preferNumber: false)) == 3.14)
+    }
+
+    @Test("apply with Operation enum - magnitude(.minimum, preferNumber: true)")
+    func applyMagnitudeMinimumNumber() {
+        #expect(IEEE_754.MinMax.apply(3.14, -2.71, operation: .magnitude(.minimum, preferNumber: true)) == -2.71)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .magnitude(.minimum, preferNumber: true)) == 3.14)
+    }
+
+    @Test("apply with Operation enum - magnitude(.maximum, preferNumber: true)")
+    func applyMagnitudeMaximumNumber() {
+        #expect(IEEE_754.MinMax.apply(3.14, -2.71, operation: .magnitude(.maximum, preferNumber: true)) == 3.14)
+        #expect(IEEE_754.MinMax.apply(Double.nan, 3.14, operation: .magnitude(.maximum, preferNumber: true)) == 3.14)
+    }
+
+    @Test("Operation enum pattern matching works correctly")
+    func operationPatternMatching() {
+        let operations: [IEEE_754.MinMax.Operation] = [
+            .standard(.minimum),
+            .standard(.maximum),
+            .number(.minimum),
+            .number(.maximum),
+            .magnitude(.minimum, preferNumber: false),
+            .magnitude(.maximum, preferNumber: false),
+            .magnitude(.minimum, preferNumber: true),
+            .magnitude(.maximum, preferNumber: true)
+        ]
+
+        for operation in operations {
+            let result = IEEE_754.MinMax.apply(3.14, 2.71, operation: operation)
+            #expect(result.isFinite)
+
+            switch operation {
+            case .standard(.minimum), .number(.minimum), .magnitude(.minimum, _):
+                #expect(result <= 3.14)
+            case .standard(.maximum), .number(.maximum), .magnitude(.maximum, _):
+                #expect(result >= 2.71)
+            }
+        }
+    }
+}
+

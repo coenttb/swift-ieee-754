@@ -31,6 +31,100 @@ extension IEEE_754 {
     public enum NextOperations {}
 }
 
+// MARK: - Hierarchical Next Direction Enum
+
+extension IEEE_754.NextOperations {
+    /// IEEE 754 Next Operation Direction
+    ///
+    /// Hierarchical structure for next-value operations with better pattern matching.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// let next = IEEE_754.NextOperations.next(value, direction: .toward(.positiveInfinity))
+    ///
+    /// switch direction {
+    /// case .toward(.positiveInfinity):
+    ///     // nextUp
+    /// case .toward(.negativeInfinity):
+    ///     // nextDown
+    /// case .toward(.value(let target)):
+    ///     // nextAfter
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    /// - IEEE 754-2019 Section 5.3.1: Next operations
+    public enum Direction: Sendable, Equatable {
+        /// Move toward a specific target
+        case toward(Target)
+
+        /// Target for next operation
+        public enum Target: Sendable, Equatable {
+            /// Toward positive infinity (nextUp)
+            case positiveInfinity
+            /// Toward negative infinity (nextDown)
+            case negativeInfinity
+            /// Toward a specific value (nextAfter)
+            case value(Double)
+
+            /// Equality comparison for Target
+            public static func == (lhs: Target, rhs: Target) -> Bool {
+                switch (lhs, rhs) {
+                case (.positiveInfinity, .positiveInfinity):
+                    return true
+                case (.negativeInfinity, .negativeInfinity):
+                    return true
+                case (.value(let l), .value(let r)):
+                    return l.bitPattern == r.bitPattern  // Bitwise equality for NaN handling
+                default:
+                    return false
+                }
+            }
+        }
+    }
+
+    /// Unified next operation for Double values
+    ///
+    /// Implements all IEEE 754 next operations through a single interface.
+    ///
+    /// - Parameters:
+    ///   - value: The starting value
+    ///   - direction: The direction to move
+    /// - Returns: The next representable value in the specified direction
+    @inlinable
+    public static func next(_ value: Double, direction: Direction) -> Double {
+        switch direction {
+        case .toward(.positiveInfinity):
+            return value.nextUp
+        case .toward(.negativeInfinity):
+            return value.nextDown
+        case .toward(.value(let target)):
+            return nextAfter(value, toward: target)
+        }
+    }
+
+    /// Unified next operation for Float values
+    ///
+    /// Implements all IEEE 754 next operations through a single interface.
+    ///
+    /// - Parameters:
+    ///   - value: The starting value
+    ///   - direction: The direction to move
+    /// - Returns: The next representable value in the specified direction
+    @inlinable
+    public static func next(_ value: Float, direction: Direction) -> Float {
+        switch direction {
+        case .toward(.positiveInfinity):
+            return value.nextUp
+        case .toward(.negativeInfinity):
+            return value.nextDown
+        case .toward(.value(let target)):
+            return nextAfter(value, toward: Float(target))
+        }
+    }
+}
+
 // MARK: - Double Next Operations
 
 extension IEEE_754.NextOperations {
@@ -57,7 +151,7 @@ extension IEEE_754.NextOperations {
     /// ```
     @inlinable
     public static func nextUp(_ value: Double) -> Double {
-        value.nextUp
+        next(value, direction: .toward(.positiveInfinity))
     }
 
     /// Next value toward negative infinity - IEEE 754 `nextDown`
@@ -82,7 +176,7 @@ extension IEEE_754.NextOperations {
     /// ```
     @inlinable
     public static func nextDown(_ value: Double) -> Double {
-        value.nextDown
+        next(value, direction: .toward(.negativeInfinity))
     }
 
     /// Next value toward target - IEEE 754 `nextAfter`
@@ -145,7 +239,7 @@ extension IEEE_754.NextOperations {
     /// ```
     @inlinable
     public static func nextUp(_ value: Float) -> Float {
-        value.nextUp
+        next(value, direction: .toward(.positiveInfinity))
     }
 
     /// Next value toward negative infinity - IEEE 754 `nextDown`
@@ -162,7 +256,7 @@ extension IEEE_754.NextOperations {
     /// ```
     @inlinable
     public static func nextDown(_ value: Float) -> Float {
-        value.nextDown
+        next(value, direction: .toward(.negativeInfinity))
     }
 
     /// Next value toward target - IEEE 754 `nextAfter`

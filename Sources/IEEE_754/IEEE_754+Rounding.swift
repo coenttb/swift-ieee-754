@@ -38,6 +38,107 @@ extension IEEE_754 {
     public enum Rounding {}
 }
 
+// MARK: - Hierarchical Rounding Direction Enum
+
+extension IEEE_754.Rounding {
+    /// IEEE 754 Rounding Direction
+    ///
+    /// Represents the 5 IEEE 754-2019 rounding-direction attributes using
+    /// a hierarchical structure for more elegant API.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// let rounded = IEEE_754.Rounding.apply(value, direction: .towardInfinity(.negative))
+    ///
+    /// switch direction {
+    /// case .towardInfinity(.negative):
+    ///     // floor
+    /// case .towardInfinity(.positive):
+    ///     // ceil
+    /// case .toNearest(.toEven):
+    ///     // round
+    /// case .towardZero:
+    ///     // trunc
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    /// - IEEE 754-2019 Section 4.3.1: Rounding-direction attributes
+    public enum Direction: Sendable, Equatable {
+        /// Round toward infinity (floor for negative, ceil for positive)
+        case towardInfinity(Sign)
+        /// Round toward zero (truncate)
+        case towardZero
+        /// Round to nearest integral value
+        case toNearest(TieBreaking)
+
+        /// Sign for directional rounding
+        public enum Sign: Sendable, Equatable {
+            /// Toward positive infinity (ceil)
+            case positive
+            /// Toward negative infinity (floor)
+            case negative
+        }
+
+        /// Tie-breaking rule for round-to-nearest
+        public enum TieBreaking: Sendable, Equatable {
+            /// Round ties to even (default IEEE 754 mode)
+            case toEven
+            /// Round ties away from zero
+            case awayFromZero
+        }
+    }
+
+    /// Apply rounding direction to a Double value
+    ///
+    /// Unified interface for all 5 IEEE 754 rounding modes.
+    ///
+    /// - Parameters:
+    ///   - value: The value to round
+    ///   - direction: The rounding direction
+    /// - Returns: The rounded value
+    @inlinable
+    public static func apply(_ value: Double, direction: Direction) -> Double {
+        switch direction {
+        case .towardInfinity(.negative):
+            return value.rounded(.down)
+        case .towardInfinity(.positive):
+            return value.rounded(.up)
+        case .towardZero:
+            return value.rounded(.towardZero)
+        case .toNearest(.toEven):
+            return value.rounded(.toNearestOrEven)
+        case .toNearest(.awayFromZero):
+            return value.rounded(.toNearestOrAwayFromZero)
+        }
+    }
+
+    /// Apply rounding direction to a Float value
+    ///
+    /// Unified interface for all 5 IEEE 754 rounding modes.
+    ///
+    /// - Parameters:
+    ///   - value: The value to round
+    ///   - direction: The rounding direction
+    /// - Returns: The rounded value
+    @inlinable
+    public static func apply(_ value: Float, direction: Direction) -> Float {
+        switch direction {
+        case .towardInfinity(.negative):
+            return value.rounded(.down)
+        case .towardInfinity(.positive):
+            return value.rounded(.up)
+        case .towardZero:
+            return value.rounded(.towardZero)
+        case .toNearest(.toEven):
+            return value.rounded(.toNearestOrEven)
+        case .toNearest(.awayFromZero):
+            return value.rounded(.toNearestOrAwayFromZero)
+        }
+    }
+}
+
 // MARK: - Double Rounding Operations
 
 extension IEEE_754.Rounding {
@@ -64,7 +165,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func floor(_ value: Double) -> Double {
-        value.rounded(.down)
+        apply(value, direction: .towardInfinity(.negative))
     }
 
     /// Rounds toward positive infinity (ceil)
@@ -90,7 +191,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func ceil(_ value: Double) -> Double {
-        value.rounded(.up)
+        apply(value, direction: .towardInfinity(.positive))
     }
 
     /// Rounds to nearest integral value, ties to even (round)
@@ -118,7 +219,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func round(_ value: Double) -> Double {
-        value.rounded(.toNearestOrEven)
+        apply(value, direction: .toNearest(.toEven))
     }
 
     /// Rounds toward zero (trunc)
@@ -144,7 +245,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func trunc(_ value: Double) -> Double {
-        value.rounded(.towardZero)
+        apply(value, direction: .towardZero)
     }
 
     /// Rounds to nearest integral value, ties away from zero
@@ -172,7 +273,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func roundAwayFromZero(_ value: Double) -> Double {
-        value.rounded(.toNearestOrAwayFromZero)
+        apply(value, direction: .toNearest(.awayFromZero))
     }
 }
 
@@ -202,7 +303,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func floor(_ value: Float) -> Float {
-        value.rounded(.down)
+        apply(value, direction: .towardInfinity(.negative))
     }
 
     /// Rounds toward positive infinity (ceil)
@@ -228,7 +329,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func ceil(_ value: Float) -> Float {
-        value.rounded(.up)
+        apply(value, direction: .towardInfinity(.positive))
     }
 
     /// Rounds to nearest integral value, ties to even (round)
@@ -256,7 +357,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func round(_ value: Float) -> Float {
-        value.rounded(.toNearestOrEven)
+        apply(value, direction: .toNearest(.toEven))
     }
 
     /// Rounds toward zero (trunc)
@@ -282,7 +383,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func trunc(_ value: Float) -> Float {
-        value.rounded(.towardZero)
+        apply(value, direction: .towardZero)
     }
 
     /// Rounds to nearest integral value, ties away from zero
@@ -310,7 +411,7 @@ extension IEEE_754.Rounding {
     /// ```
     @inlinable
     public static func roundAwayFromZero(_ value: Float) -> Float {
-        value.rounded(.toNearestOrAwayFromZero)
+        apply(value, direction: .toNearest(.awayFromZero))
     }
 }
 
