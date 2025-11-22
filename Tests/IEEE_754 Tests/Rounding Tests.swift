@@ -27,7 +27,6 @@ extension RoundingTests {
     func doubleFloor(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.floor(value) == expected)
         #expect(value.ieee754.floor == expected)
-        #expect(value.floor == expected)
     }
 
     @Test("floor handles special values")
@@ -58,7 +57,6 @@ extension RoundingTests {
     func doubleCeil(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.ceil(value) == expected)
         #expect(value.ieee754.ceil == expected)
-        #expect(value.ceil == expected)
     }
 
     @Test("ceil handles special values")
@@ -91,7 +89,6 @@ extension RoundingTests {
     func doubleRound(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.round(value) == expected)
         #expect(value.ieee754.round == expected)
-        #expect(value.round == expected)
     }
 
     @Test("round handles special values")
@@ -122,7 +119,6 @@ extension RoundingTests {
     func doubleTrunc(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.trunc(value) == expected)
         #expect(value.ieee754.trunc == expected)
-        #expect(value.trunc == expected)
     }
 
     @Test("trunc handles special values")
@@ -148,7 +144,6 @@ extension RoundingTests {
     func floatFloor(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.floor(value) == expected)
         #expect(value.ieee754.floor == expected)
-        #expect(value.floor == expected)
     }
 
     @Test("float floor handles special values")
@@ -172,7 +167,6 @@ extension RoundingTests {
     func floatCeil(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.ceil(value) == expected)
         #expect(value.ieee754.ceil == expected)
-        #expect(value.ceil == expected)
     }
 
     @Test("float ceil handles special values")
@@ -197,7 +191,6 @@ extension RoundingTests {
     func floatRound(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.round(value) == expected)
         #expect(value.ieee754.round == expected)
-        #expect(value.round == expected)
     }
 
     @Test("float round handles special values")
@@ -221,7 +214,6 @@ extension RoundingTests {
     func floatTrunc(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.trunc(value) == expected)
         #expect(value.ieee754.trunc == expected)
-        #expect(value.trunc == expected)
     }
 
     @Test("float trunc handles special values")

@@ -36,7 +36,7 @@ extension Double {
     ///
     /// Provides namespaced access to IEEE 754 binary64 serialization methods
     /// and properties for Double values.
-    public struct IEEE754 {
+    public struct IEEE754: Sendable {
         public let double: Double
 
         init(double: Double) {
@@ -61,10 +61,15 @@ extension Double {
     /// Example:
     /// ```swift
     /// let value = Double(bytes: [0x18, 0x2D, 0x44, 0x54, 0xFB, 0x21, 0x09, 0x40])
-    /// // 3.141592653589793
+    /// // Optional(3.141592653589793)
     ///
     /// let value = Double(bytes: data, endianness: .big)
+    /// // Optional(someValue) or nil
     /// ```
+    ///
+    /// - Note: Returns `nil` for empty byte arrays (scalars require exactly 8 bytes).
+    ///   For array deserialization of empty bytes, see `[Double].init(bytes:)` which
+    ///   returns an empty array.
     ///
     /// - Note: Delegates to ``IEEE_754/Binary64/value(from:endianness:)``
     @_transparent
@@ -118,7 +123,10 @@ extension Double {
     /// Example:
     /// ```swift
     /// let value = Double.ieee754([0x18, 0x2D, 0x44, 0x54, 0xFB, 0x21, 0x09, 0x40])
+    /// // Optional(3.141592653589793)
+    ///
     /// let value = Double.ieee754(bytes, endianness: .big)
+    /// // Optional(someValue) or nil
     /// ```
     ///
     /// - Note: Delegates to ``IEEE_754/Binary64/value(from:endianness:)``

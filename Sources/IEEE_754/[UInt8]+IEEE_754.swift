@@ -30,7 +30,7 @@ extension [UInt8] {
     ///
     /// Provides namespaced access to IEEE 754 serialization methods for
     /// converting Float and Double values to byte arrays.
-    public struct IEEE754 {
+    public struct IEEE754: Sendable {
         public let bytes: [UInt8]
 
         init(bytes: [UInt8]) {

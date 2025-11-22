@@ -36,7 +36,7 @@ extension Float {
     ///
     /// Provides namespaced access to IEEE 754 binary32 serialization methods
     /// and properties for Float values.
-    public struct IEEE754 {
+    public struct IEEE754: Sendable {
         public let float: Float
 
         init(float: Float) {
@@ -61,10 +61,15 @@ extension Float {
     /// Example:
     /// ```swift
     /// let value = Float(bytes: [0xD0, 0x0F, 0x49, 0x40])
-    /// // 3.14159
+    /// // Optional(3.14159)
     ///
     /// let value = Float(bytes: data, endianness: .big)
+    /// // Optional(someValue) or nil
     /// ```
+    ///
+    /// - Note: Returns `nil` for empty byte arrays (scalars require exactly 4 bytes).
+    ///   For array deserialization of empty bytes, see `[Float].init(bytes:)` which
+    ///   returns an empty array.
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/value(from:endianness:)``
     @_transparent
@@ -118,7 +123,10 @@ extension Float {
     /// Example:
     /// ```swift
     /// let value = Float.ieee754([0xD0, 0x0F, 0x49, 0x40])
+    /// // Optional(3.14159)
+    ///
     /// let value = Float.ieee754(bytes, endianness: .big)
+    /// // Optional(someValue) or nil
     /// ```
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/value(from:endianness:)``

@@ -161,9 +161,9 @@ let subnormal = Double.leastNonzeroMagnitude.bytes()
 
 Benchmarked on Apple Silicon:
 
-- Serialization: 0.5 microseconds per Double
-- Deserialization: 0.5 microseconds per Double
-- Round-trip 10,000 conversions: 5ms
+- Serialization: 3-4 microseconds per Double
+- Deserialization: 3-4 microseconds per Double
+- Round-trip 10,000 conversions: 70ms (test threshold)
 
 Optimizations:
 - Zero-copy memory operations with `withUnsafeBytes`

@@ -56,7 +56,7 @@
 /// Optimized for high-throughput scenarios:
 /// - Zero-copy deserialization with unsafe memory operations
 /// - Cross-module inlining via `@inlinable` and `@_transparent`
-/// - ~0.5 microseconds per serialization/deserialization operation
+/// - ~3-4 microseconds per serialization/deserialization operation
 ///
 /// ## See Also
 ///

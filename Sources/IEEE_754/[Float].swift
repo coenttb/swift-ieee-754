@@ -26,6 +26,10 @@ extension [Float] {
     /// // [3.14159, 1.0]
     /// ```
     ///
+    /// Edge cases:
+    /// - Empty byte arrays return an empty array (vacuous truth semantics)
+    /// - Invalid byte counts (not divisible by 4) return `nil`
+    ///
     /// - Note: Uses ``Float/init(bytes:endianness:)`` under the hood
     public init?<C: Collection>(bytes: C, endianness: [UInt8].Endianness = .little)
     where C.Element == UInt8 {
