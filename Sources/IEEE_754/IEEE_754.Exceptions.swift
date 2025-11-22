@@ -4,7 +4,7 @@
 // IEEE 754-2019 Section 7: Exception Handling
 // Authoritative implementations for IEEE 754 exception flags
 
-import Foundation
+import Synchronization
 
 // MARK: - IEEE 754 Exception Handling
 
@@ -26,8 +26,9 @@ extension IEEE_754 {
     ///
     /// ## Thread Safety
     ///
-    /// Exception state is maintained in a thread-safe shared store with lock-based
-    /// synchronization. All operations are atomic and safe to call from multiple threads.
+    /// Exception state is maintained in a thread-safe shared store using Swift's
+    /// Synchronization.Mutex (Foundation-free). All operations are atomic and safe
+    /// to call from multiple threads.
     ///
     /// ## Usage
     ///
@@ -159,73 +160,76 @@ extension IEEE_754.Exceptions {
     /// Exception state container
     @usableFromInline
     final class ExceptionState: @unchecked Sendable {
-        private let lock = NSLock()
-        private var invalid: Bool = false
-        private var divisionByZero: Bool = false
-        private var overflow: Bool = false
-        private var underflow: Bool = false
-        private var inexact: Bool = false
+        @usableFromInline
+        struct Flags {
+            var invalid: Bool = false
+            var divisionByZero: Bool = false
+            var overflow: Bool = false
+            var underflow: Bool = false
+            var inexact: Bool = false
+        }
+
+        private let state = Mutex(Flags())
 
         @usableFromInline
         init() {}
 
         @usableFromInline
         func set(_ flag: Flag) {
-            lock.lock()
-            defer { lock.unlock() }
-            switch flag {
-            case .invalid: invalid = true
-            case .divisionByZero: divisionByZero = true
-            case .overflow: overflow = true
-            case .underflow: underflow = true
-            case .inexact: inexact = true
+            state.withLock { flags in
+                switch flag {
+                case .invalid: flags.invalid = true
+                case .divisionByZero: flags.divisionByZero = true
+                case .overflow: flags.overflow = true
+                case .underflow: flags.underflow = true
+                case .inexact: flags.inexact = true
+                }
             }
         }
 
         @usableFromInline
         func clear(_ flag: Flag) {
-            lock.lock()
-            defer { lock.unlock() }
-            switch flag {
-            case .invalid: invalid = false
-            case .divisionByZero: divisionByZero = false
-            case .overflow: overflow = false
-            case .underflow: underflow = false
-            case .inexact: inexact = false
+            state.withLock { flags in
+                switch flag {
+                case .invalid: flags.invalid = false
+                case .divisionByZero: flags.divisionByZero = false
+                case .overflow: flags.overflow = false
+                case .underflow: flags.underflow = false
+                case .inexact: flags.inexact = false
+                }
             }
         }
 
         @usableFromInline
         func get(_ flag: Flag) -> Bool {
-            lock.lock()
-            defer { lock.unlock() }
-            switch flag {
-            case .invalid: return invalid
-            case .divisionByZero: return divisionByZero
-            case .overflow: return overflow
-            case .underflow: return underflow
-            case .inexact: return inexact
+            state.withLock { flags in
+                switch flag {
+                case .invalid: return flags.invalid
+                case .divisionByZero: return flags.divisionByZero
+                case .overflow: return flags.overflow
+                case .underflow: return flags.underflow
+                case .inexact: return flags.inexact
+                }
             }
         }
 
         @usableFromInline
         func clearAll() {
-            lock.lock()
-            defer { lock.unlock() }
-            invalid = false
-            divisionByZero = false
-            overflow = false
-            underflow = false
-            inexact = false
+            state.withLock { flags in
+                flags.invalid = false
+                flags.divisionByZero = false
+                flags.overflow = false
+                flags.underflow = false
+                flags.inexact = false
+            }
         }
     }
 
     /// Global shared exception state
     ///
-    /// In Swift, true thread-local storage requires platform-specific APIs.
-    /// This implementation uses a single shared state with synchronization.
-    /// For production use with true thread-local behavior, consider using
-    /// platform-specific TLS APIs (pthread_key_create on POSIX platforms).
+    /// Uses Swift 6.0 Synchronization.Mutex for Foundation-free thread safety.
+    /// For true thread-local storage, use the CIEEE754 C target which provides
+    /// pthread-based TLS on supported platforms.
     @usableFromInline
     static let sharedState = ExceptionState()
 }

@@ -1,0 +1,137 @@
+// signaling_compare.c
+// CIEEE754
+//
+// IEEE 754-2019 Section 5.6.1: Signaling Comparison Predicates
+
+#include "include/ieee754_fpu.h"
+#include <fenv.h>
+#include <math.h>
+
+// =============================================================================
+// MARK: - Double (binary64) Signaling Comparisons
+// =============================================================================
+
+int ieee754_signaling_equal(double x, double y) {
+    // Check for NaN - if either is NaN, raise invalid exception
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;  // IEEE 754: NaN comparisons always return false
+    }
+
+    return x == y;
+}
+
+int ieee754_signaling_less(double x, double y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x < y;
+}
+
+int ieee754_signaling_less_equal(double x, double y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x <= y;
+}
+
+int ieee754_signaling_greater(double x, double y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x > y;
+}
+
+int ieee754_signaling_greater_equal(double x, double y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x >= y;
+}
+
+int ieee754_signaling_not_equal(double x, double y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 1;  // IEEE 754: NaN is not equal to anything (including itself)
+    }
+
+    return x != y;
+}
+
+// =============================================================================
+// MARK: - Float (binary32) Signaling Comparisons
+// =============================================================================
+
+int ieee754_signaling_equal_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x == y;
+}
+
+int ieee754_signaling_less_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x < y;
+}
+
+int ieee754_signaling_less_equal_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x <= y;
+}
+
+int ieee754_signaling_greater_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x > y;
+}
+
+int ieee754_signaling_greater_equal_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 0;
+    }
+
+    return x >= y;
+}
+
+int ieee754_signaling_not_equal_f(float x, float y) {
+    if (isnan(x) || isnan(y)) {
+        feraiseexcept(FE_INVALID);
+        ieee754_raise_exception(IEEE754_EXCEPTION_INVALID);
+        return 1;
+    }
+
+    return x != y;
+}

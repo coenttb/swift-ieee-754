@@ -34,9 +34,14 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "CIEEE754",
+            dependencies: []
+        ),
+        .target(
             name: "IEEE_754",
             dependencies: [
-                .product(name: "Standards", package: "swift-standards")
+                .product(name: "Standards", package: "swift-standards"),
+                .target(name: "CIEEE754", condition: .when(platforms: [.macOS, .linux, .iOS, .tvOS, .watchOS]))
             ]
         ),
         .testTarget(
