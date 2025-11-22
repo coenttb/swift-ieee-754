@@ -421,87 +421,120 @@ extension IEEE_754.Classification {
     ///
     /// ## See Also
     /// - IEEE 754-2019 Section 5.7.2: class predicate
-    public enum NumberClass {
-        /// Signaling NaN
-        case signalingNaN
-        /// Quiet NaN
-        case quietNaN
-        /// Negative infinity
-        case negativeInfinity
-        /// Negative normal number
-        case negativeNormal
-        /// Negative subnormal number
-        case negativeSubnormal
-        /// Negative zero
-        case negativeZero
-        /// Positive zero
-        case positiveZero
-        /// Positive subnormal number
-        case positiveSubnormal
-        /// Positive normal number
-        case positiveNormal
-        /// Positive infinity
-        case positiveInfinity
+    /// IEEE 754 Number Class
+    ///
+    /// Represents the 10 IEEE 754 number classes using a hierarchical structure
+    /// with associated values for more elegant pattern matching.
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// switch IEEE_754.Classification.numberClass(value) {
+    /// case .nan(.signaling):
+    ///     // Handle signaling NaN
+    /// case .nan(.quiet):
+    ///     // Handle quiet NaN
+    /// case .positive(.infinity):
+    ///     // Handle +∞
+    /// case .positive(.normal):
+    ///     // Handle positive normal
+    /// case .negative(.zero):
+    ///     // Handle -0.0
+    /// }
+    /// ```
+    public enum NumberClass: Sendable, Equatable {
+        /// NaN (Not a Number)
+        case nan(NaNKind)
+        /// Positive value
+        case positive(FiniteKind)
+        /// Negative value
+        case negative(FiniteKind)
+
+        /// Kind of NaN
+        public enum NaNKind: Sendable, Equatable {
+            /// Signaling NaN (raises exception on most operations)
+            case signaling
+            /// Quiet NaN (propagates through operations)
+            case quiet
+        }
+
+        /// Kind of finite or infinite value
+        public enum FiniteKind: Sendable, Equatable {
+            /// Infinity (±∞)
+            case infinity
+            /// Normal number (normalized with implicit leading 1)
+            case normal
+            /// Subnormal number (denormalized)
+            case subnormal
+            /// Zero (±0)
+            case zero
+        }
     }
 
     /// Returns the class of a Double value - IEEE 754 `class`
     ///
-    /// Classifies the value into one of 10 IEEE 754 number classes.
+    /// Classifies the value into one of 10 IEEE 754 number classes using a hierarchical structure.
     ///
     /// - Parameter value: The value to classify
     /// - Returns: The number class
     ///
     /// Example:
     /// ```swift
-    /// IEEE_754.Classification.numberClass(3.14)       // .positiveNormal
-    /// IEEE_754.Classification.numberClass(-0.0)       // .negativeZero
-    /// IEEE_754.Classification.numberClass(.infinity)  // .positiveInfinity
-    /// IEEE_754.Classification.numberClass(.nan)       // .quietNaN
+    /// IEEE_754.Classification.numberClass(3.14)       // .positive(.normal)
+    /// IEEE_754.Classification.numberClass(-0.0)       // .negative(.zero)
+    /// IEEE_754.Classification.numberClass(.infinity)  // .positive(.infinity)
+    /// IEEE_754.Classification.numberClass(.nan)       // .nan(.quiet)
     /// ```
     @inlinable
     public static func numberClass(_ value: Double) -> NumberClass {
         if value.isNaN {
-            return value.isSignalingNaN ? .signalingNaN : .quietNaN
+            return .nan(value.isSignalingNaN ? .signaling : .quiet)
         }
+
+        let kind: NumberClass.FiniteKind
         if value.isInfinite {
-            return value.sign == .minus ? .negativeInfinity : .positiveInfinity
+            kind = .infinity
+        } else if value.isZero {
+            kind = .zero
+        } else if value.isSubnormal {
+            kind = .subnormal
+        } else {
+            kind = .normal
         }
-        if value.isZero {
-            return value.sign == .minus ? .negativeZero : .positiveZero
-        }
-        if value.isSubnormal {
-            return value.sign == .minus ? .negativeSubnormal : .positiveSubnormal
-        }
-        return value.sign == .minus ? .negativeNormal : .positiveNormal
+
+        return value.sign == .minus ? .negative(kind) : .positive(kind)
     }
 
     /// Returns the class of a Float value - IEEE 754 `class`
     ///
-    /// Classifies the value into one of 10 IEEE 754 number classes.
+    /// Classifies the value into one of 10 IEEE 754 number classes using a hierarchical structure.
     ///
     /// - Parameter value: The value to classify
     /// - Returns: The number class
     ///
     /// Example:
     /// ```swift
-    /// IEEE_754.Classification.numberClass(Float(3.14))       // .positiveNormal
-    /// IEEE_754.Classification.numberClass(Float(-0.0))       // .negativeZero
-    /// IEEE_754.Classification.numberClass(Float.infinity)    // .positiveInfinity
+    /// IEEE_754.Classification.numberClass(Float(3.14))       // .positive(.normal)
+    /// IEEE_754.Classification.numberClass(Float(-0.0))       // .negative(.zero)
+    /// IEEE_754.Classification.numberClass(Float.infinity)    // .positive(.infinity)
     /// ```
     @inlinable
     public static func numberClass(_ value: Float) -> NumberClass {
         if value.isNaN {
-            return value.isSignalingNaN ? .signalingNaN : .quietNaN
+            return .nan(value.isSignalingNaN ? .signaling : .quiet)
         }
+
+        let kind: NumberClass.FiniteKind
         if value.isInfinite {
-            return value.sign == .minus ? .negativeInfinity : .positiveInfinity
+            kind = .infinity
+        } else if value.isZero {
+            kind = .zero
+        } else if value.isSubnormal {
+            kind = .subnormal
+        } else {
+            kind = .normal
         }
-        if value.isZero {
-            return value.sign == .minus ? .negativeZero : .positiveZero
-        }
-        if value.isSubnormal {
-            return value.sign == .minus ? .negativeSubnormal : .positiveSubnormal
-        }
-        return value.sign == .minus ? .negativeNormal : .positiveNormal
+
+        return value.sign == .minus ? .negative(kind) : .positive(kind)
     }
 }

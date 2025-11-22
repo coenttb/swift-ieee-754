@@ -227,55 +227,55 @@ struct DoubleRadixTests {
 struct DoubleNumberClassTests {
     @Test func signalingNaN() {
         let snan = Double.signalingNaN
-        #expect(IEEE_754.Classification.numberClass(snan) == .signalingNaN)
+        #expect(IEEE_754.Classification.numberClass(snan) == .nan(.signaling))
     }
 
     @Test func quietNaN() {
         let qnan = Double.nan
-        #expect(IEEE_754.Classification.numberClass(qnan) == .quietNaN)
+        #expect(IEEE_754.Classification.numberClass(qnan) == .nan(.quiet))
     }
 
     @Test func negativeInfinity() {
-        #expect(IEEE_754.Classification.numberClass(-Double.infinity) == .negativeInfinity)
+        #expect(IEEE_754.Classification.numberClass(-Double.infinity) == .negative(.infinity))
     }
 
     @Test func negativeNormal() {
-        #expect(IEEE_754.Classification.numberClass(-3.14) == .negativeNormal)
+        #expect(IEEE_754.Classification.numberClass(-3.14) == .negative(.normal))
     }
 
     @Test func negativeSubnormal() {
         let negSubnorm = -Double.leastNonzeroMagnitude
-        #expect(IEEE_754.Classification.numberClass(negSubnorm) == .negativeSubnormal)
+        #expect(IEEE_754.Classification.numberClass(negSubnorm) == .negative(.subnormal))
     }
 
     @Test func negativeZero() {
-        #expect(IEEE_754.Classification.numberClass(-0.0) == .negativeZero)
+        #expect(IEEE_754.Classification.numberClass(-0.0) == .negative(.zero))
     }
 
     @Test func positiveZero() {
-        #expect(IEEE_754.Classification.numberClass(0.0) == .positiveZero)
+        #expect(IEEE_754.Classification.numberClass(0.0) == .positive(.zero))
     }
 
     @Test func positiveSubnormal() {
         let posSubnorm = Double.leastNonzeroMagnitude
-        #expect(IEEE_754.Classification.numberClass(posSubnorm) == .positiveSubnormal)
+        #expect(IEEE_754.Classification.numberClass(posSubnorm) == .positive(.subnormal))
     }
 
     @Test func positiveNormal() {
-        #expect(IEEE_754.Classification.numberClass(3.14) == .positiveNormal)
+        #expect(IEEE_754.Classification.numberClass(3.14) == .positive(.normal))
     }
 
     @Test func positiveInfinity() {
-        #expect(IEEE_754.Classification.numberClass(Double.infinity) == .positiveInfinity)
+        #expect(IEEE_754.Classification.numberClass(Double.infinity) == .positive(.infinity))
     }
 
     @Test(arguments: [
-        (-Double.infinity, IEEE_754.Classification.NumberClass.negativeInfinity),
-        (-100.0, .negativeNormal),
-        (-0.0, .negativeZero),
-        (0.0, .positiveZero),
-        (100.0, .positiveNormal),
-        (Double.infinity, .positiveInfinity)
+        (-Double.infinity, IEEE_754.Classification.NumberClass.negative(.infinity)),
+        (-100.0, .negative(.normal)),
+        (-0.0, .negative(.zero)),
+        (0.0, .positive(.zero)),
+        (100.0, .positive(.normal)),
+        (Double.infinity, .positive(.infinity))
     ])
     func numberClassCases(value: Double, expected: IEEE_754.Classification.NumberClass) {
         #expect(IEEE_754.Classification.numberClass(value) == expected)
@@ -333,29 +333,29 @@ struct FloatIsFiniteTests {
 @Suite("IEEE_754.Classification - Float numberClass")
 struct FloatNumberClassTests {
     @Test(arguments: [
-        (Float(-0.0), IEEE_754.Classification.NumberClass.negativeZero),
-        (Float(0.0), .positiveZero),
-        (Float(-3.14), .negativeNormal),
-        (Float(3.14), .positiveNormal),
-        (-Float.infinity, .negativeInfinity),
-        (Float.infinity, .positiveInfinity)
+        (Float(-0.0), IEEE_754.Classification.NumberClass.negative(.zero)),
+        (Float(0.0), .positive(.zero)),
+        (Float(-3.14), .negative(.normal)),
+        (Float(3.14), .positive(.normal)),
+        (-Float.infinity, .negative(.infinity)),
+        (Float.infinity, .positive(.infinity))
     ])
     func numberClassCases(value: Float, expected: IEEE_754.Classification.NumberClass) {
         #expect(IEEE_754.Classification.numberClass(value) == expected)
     }
 
     @Test func quietNaN() {
-        #expect(IEEE_754.Classification.numberClass(Float.nan) == .quietNaN)
+        #expect(IEEE_754.Classification.numberClass(Float.nan) == .nan(.quiet))
     }
 
     @Test func signalingNaN() {
-        #expect(IEEE_754.Classification.numberClass(Float.signalingNaN) == .signalingNaN)
+        #expect(IEEE_754.Classification.numberClass(Float.signalingNaN) == .nan(.signaling))
     }
 
     @Test func subnormals() {
         let posSubnorm = Float.leastNonzeroMagnitude
         let negSubnorm = -Float.leastNonzeroMagnitude
-        #expect(IEEE_754.Classification.numberClass(posSubnorm) == .positiveSubnormal)
-        #expect(IEEE_754.Classification.numberClass(negSubnorm) == .negativeSubnormal)
+        #expect(IEEE_754.Classification.numberClass(posSubnorm) == .positive(.subnormal))
+        #expect(IEEE_754.Classification.numberClass(negSubnorm) == .negative(.subnormal))
     }
 }
