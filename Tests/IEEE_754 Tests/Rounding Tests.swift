@@ -224,6 +224,86 @@ extension RoundingTests {
     }
 }
 
+// MARK: - Double RoundAwayFromZero Tests
+
+extension RoundingTests {
+    @Test("roundAwayFromZero rounds to nearest (ties away from zero)", arguments: [
+        (3.4, 3.0),
+        (3.5, 4.0),   // Ties away from zero: 3.5 → 4.0
+        (3.6, 4.0),
+        (4.5, 5.0),   // Ties away from zero: 4.5 → 5.0
+        (5.5, 6.0),   // Ties away from zero: 5.5 → 6.0
+        (-3.4, -3.0),
+        (-3.5, -4.0), // Ties away from zero: -3.5 → -4.0
+        (-3.6, -4.0),
+        (-4.5, -5.0), // Ties away from zero: -4.5 → -5.0
+        (-5.5, -6.0), // Ties away from zero: -5.5 → -6.0
+        (0.5, 1.0),   // Ties away from zero: 0.5 → 1.0
+        (-0.5, -1.0), // Ties away from zero: -0.5 → -1.0
+        (2.5, 3.0),   // Ties away from zero: 2.5 → 3.0
+        (1.5, 2.0),   // Ties away from zero: 1.5 → 2.0
+    ])
+    func doubleRoundAwayFromZero(value: Double, expected: Double) {
+        #expect(IEEE_754.Rounding.roundAwayFromZero(value) == expected)
+        #expect(value.ieee754.roundAwayFromZero == expected)
+    }
+
+    @Test("roundAwayFromZero handles special values")
+    func roundAwayFromZeroSpecialValues() {
+        #expect(IEEE_754.Rounding.roundAwayFromZero(Double.infinity) == Double.infinity)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(-Double.infinity) == -Double.infinity)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(Double.nan).isNaN)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(0.0) == 0.0)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(-0.0) == -0.0)
+    }
+
+    @Test("roundAwayFromZero differs from round on ties")
+    func roundAwayFromZeroDiffersFromRound() {
+        // These demonstrate the difference between ties-to-even and ties-away-from-zero
+        let tieValues = [0.5, 1.5, 2.5, 3.5, 4.5, -0.5, -1.5, -2.5, -3.5, -4.5]
+        for value in tieValues {
+            let awayResult = IEEE_754.Rounding.roundAwayFromZero(value)
+            let evenResult = IEEE_754.Rounding.round(value)
+
+            // Both should be integral
+            #expect(awayResult.truncatingRemainder(dividingBy: 1.0) == 0.0)
+            #expect(evenResult.truncatingRemainder(dividingBy: 1.0) == 0.0)
+
+            // For ties away from zero, the result is always away from zero
+            if value > 0 {
+                #expect(awayResult >= value, "Positive tie should round up")
+            } else if value < 0 {
+                #expect(awayResult <= value, "Negative tie should round down")
+            }
+        }
+    }
+}
+
+// MARK: - Float RoundAwayFromZero Tests
+
+extension RoundingTests {
+    @Test("float roundAwayFromZero rounds to nearest (ties away from zero)", arguments: [
+        (Float(3.4), Float(3.0)),
+        (Float(3.5), Float(4.0)),  // Ties away from zero
+        (Float(3.6), Float(4.0)),
+        (Float(4.5), Float(5.0)),  // Ties away from zero
+        (Float(-3.5), Float(-4.0)), // Ties away from zero
+        (Float(0.5), Float(1.0)),  // Ties away from zero
+        (Float(-0.5), Float(-1.0)), // Ties away from zero
+    ])
+    func floatRoundAwayFromZero(value: Float, expected: Float) {
+        #expect(IEEE_754.Rounding.roundAwayFromZero(value) == expected)
+        #expect(value.ieee754.roundAwayFromZero == expected)
+    }
+
+    @Test("float roundAwayFromZero handles special values")
+    func floatRoundAwayFromZeroSpecialValues() {
+        #expect(IEEE_754.Rounding.roundAwayFromZero(Float.infinity) == Float.infinity)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(-Float.infinity) == -Float.infinity)
+        #expect(IEEE_754.Rounding.roundAwayFromZero(Float.nan).isNaN)
+    }
+}
+
 // MARK: - Edge Cases
 
 extension RoundingTests {

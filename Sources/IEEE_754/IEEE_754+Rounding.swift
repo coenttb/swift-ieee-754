@@ -16,11 +16,12 @@ extension IEEE_754 {
     ///
     /// ## Overview
     ///
-    /// The IEEE 754 standard defines specific rounding operations:
+    /// The IEEE 754 standard defines five rounding-direction attributes:
     /// - `roundToIntegralTowardNegative` (floor)
     /// - `roundToIntegralTowardPositive` (ceil)
     /// - `roundToIntegralTiesToEven` (round)
     /// - `roundToIntegralTowardZero` (trunc)
+    /// - `roundToIntegralTiesToAway` (roundAwayFromZero)
     ///
     /// ## Special Values
     ///
@@ -31,6 +32,7 @@ extension IEEE_754 {
     ///
     /// ## See Also
     ///
+    /// - IEEE 754-2019 Section 4.3.1: Rounding-direction attributes
     /// - IEEE 754-2019 Section 5.9: Details of operations to round a floating-point datum to integral value
     /// - IEEE 754-2019 Section 5.10: Details of totalOrder predicate
     public enum Rounding {}
@@ -144,6 +146,34 @@ extension IEEE_754.Rounding {
     public static func trunc(_ value: Double) -> Double {
         value.rounded(.towardZero)
     }
+
+    /// Rounds to nearest integral value, ties away from zero
+    ///
+    /// Returns the nearest integral value. When exactly halfway between two integers,
+    /// rounds away from zero. Implements IEEE 754 `roundToIntegralTiesToAway`.
+    ///
+    /// - Parameter value: The value to round
+    /// - Returns: The nearest integral value (ties away from zero)
+    ///
+    /// Example:
+    /// ```swift
+    /// IEEE_754.Rounding.roundAwayFromZero(3.4)   // 3.0
+    /// IEEE_754.Rounding.roundAwayFromZero(3.5)   // 4.0 (ties away)
+    /// IEEE_754.Rounding.roundAwayFromZero(3.6)   // 4.0
+    /// IEEE_754.Rounding.roundAwayFromZero(4.5)   // 5.0 (ties away)
+    /// IEEE_754.Rounding.roundAwayFromZero(-3.5)  // -4.0 (ties away)
+    /// ```
+    ///
+    /// Special values:
+    /// ```swift
+    /// IEEE_754.Rounding.roundAwayFromZero(.infinity)  // .infinity
+    /// IEEE_754.Rounding.roundAwayFromZero(-.infinity) // -.infinity
+    /// IEEE_754.Rounding.roundAwayFromZero(.nan)       // .nan
+    /// ```
+    @inlinable
+    public static func roundAwayFromZero(_ value: Double) -> Double {
+        value.rounded(.toNearestOrAwayFromZero)
+    }
 }
 
 // MARK: - Float Rounding Operations
@@ -254,6 +284,34 @@ extension IEEE_754.Rounding {
     public static func trunc(_ value: Float) -> Float {
         value.rounded(.towardZero)
     }
+
+    /// Rounds to nearest integral value, ties away from zero
+    ///
+    /// Returns the nearest integral value. When exactly halfway between two integers,
+    /// rounds away from zero. Implements IEEE 754 `roundToIntegralTiesToAway`.
+    ///
+    /// - Parameter value: The value to round
+    /// - Returns: The nearest integral value (ties away from zero)
+    ///
+    /// Example:
+    /// ```swift
+    /// IEEE_754.Rounding.roundAwayFromZero(Float(3.4))   // 3.0
+    /// IEEE_754.Rounding.roundAwayFromZero(Float(3.5))   // 4.0 (ties away)
+    /// IEEE_754.Rounding.roundAwayFromZero(Float(3.6))   // 4.0
+    /// IEEE_754.Rounding.roundAwayFromZero(Float(4.5))   // 5.0 (ties away)
+    /// IEEE_754.Rounding.roundAwayFromZero(Float(-3.5))  // -4.0 (ties away)
+    /// ```
+    ///
+    /// Special values:
+    /// ```swift
+    /// IEEE_754.Rounding.roundAwayFromZero(Float.infinity)  // .infinity
+    /// IEEE_754.Rounding.roundAwayFromZero(-Float.infinity) // -.infinity
+    /// IEEE_754.Rounding.roundAwayFromZero(Float.nan)       // .nan
+    /// ```
+    @inlinable
+    public static func roundAwayFromZero(_ value: Float) -> Float {
+        value.rounded(.toNearestOrAwayFromZero)
+    }
 }
 
 // MARK: - Namespaced Convenience Extensions
@@ -286,6 +344,13 @@ extension Double.IEEE754 {
     public var trunc: Double {
         IEEE_754.Rounding.trunc(double)
     }
+
+    /// IEEE 754 roundAwayFromZero operation
+    ///
+    /// Rounds to nearest integral value (ties away from zero).
+    public var roundAwayFromZero: Double {
+        IEEE_754.Rounding.roundAwayFromZero(double)
+    }
 }
 
 extension Float.IEEE754 {
@@ -315,5 +380,12 @@ extension Float.IEEE754 {
     /// Rounds toward zero.
     public var trunc: Float {
         IEEE_754.Rounding.trunc(float)
+    }
+
+    /// IEEE 754 roundAwayFromZero operation
+    ///
+    /// Rounds to nearest integral value (ties away from zero).
+    public var roundAwayFromZero: Float {
+        IEEE_754.Rounding.roundAwayFromZero(float)
     }
 }
