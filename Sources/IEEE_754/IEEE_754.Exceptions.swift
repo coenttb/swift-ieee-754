@@ -6,6 +6,10 @@
 
 import Synchronization
 
+#if canImport(CIEEE754)
+import CIEEE754
+#endif
+
 // MARK: - IEEE 754 Exception Handling
 
 extension IEEE_754 {
@@ -249,9 +253,21 @@ extension IEEE_754.Exceptions {
     /// ```
     ///
     /// Note: This operation is thread-safe.
-    @inlinable
     public static func raise(_ flag: Flag) {
         sharedState.set(flag)
+
+        #if canImport(CIEEE754)
+        // Also raise in C thread-local storage for consistency
+        let cFlag: IEEE754ExceptionFlag
+        switch flag {
+        case .invalid: cFlag = IEEE754_EXCEPTION_INVALID
+        case .divisionByZero: cFlag = IEEE754_EXCEPTION_DIVBYZERO
+        case .overflow: cFlag = IEEE754_EXCEPTION_OVERFLOW
+        case .underflow: cFlag = IEEE754_EXCEPTION_UNDERFLOW
+        case .inexact: cFlag = IEEE754_EXCEPTION_INEXACT
+        }
+        ieee754_raise_exception(cFlag)
+        #endif
     }
 
     /// Test if an exception flag is raised
@@ -267,9 +283,21 @@ extension IEEE_754.Exceptions {
     ///     print("Overflow occurred")
     /// }
     /// ```
-    @inlinable
     public static func testFlag(_ flag: Flag) -> Bool {
-        sharedState.get(flag)
+        #if canImport(CIEEE754)
+        // Check C thread-local storage (preferred if available)
+        let cFlag: IEEE754ExceptionFlag
+        switch flag {
+        case .invalid: cFlag = IEEE754_EXCEPTION_INVALID
+        case .divisionByZero: cFlag = IEEE754_EXCEPTION_DIVBYZERO
+        case .overflow: cFlag = IEEE754_EXCEPTION_OVERFLOW
+        case .underflow: cFlag = IEEE754_EXCEPTION_UNDERFLOW
+        case .inexact: cFlag = IEEE754_EXCEPTION_INEXACT
+        }
+        return ieee754_test_exception(cFlag) != 0 || sharedState.get(flag)
+        #else
+        return sharedState.get(flag)
+        #endif
     }
 
     /// Clear an exception flag
@@ -282,9 +310,21 @@ extension IEEE_754.Exceptions {
     /// ```swift
     /// IEEE_754.Exceptions.clear(.overflow)
     /// ```
-    @inlinable
     public static func clear(_ flag: Flag) {
         sharedState.clear(flag)
+
+        #if canImport(CIEEE754)
+        // Also clear in C thread-local storage
+        let cFlag: IEEE754ExceptionFlag
+        switch flag {
+        case .invalid: cFlag = IEEE754_EXCEPTION_INVALID
+        case .divisionByZero: cFlag = IEEE754_EXCEPTION_DIVBYZERO
+        case .overflow: cFlag = IEEE754_EXCEPTION_OVERFLOW
+        case .underflow: cFlag = IEEE754_EXCEPTION_UNDERFLOW
+        case .inexact: cFlag = IEEE754_EXCEPTION_INEXACT
+        }
+        ieee754_clear_exception(cFlag)
+        #endif
     }
 
     /// Clear all exception flags
@@ -295,9 +335,13 @@ extension IEEE_754.Exceptions {
     /// ```swift
     /// IEEE_754.Exceptions.clearAll()
     /// ```
-    @inlinable
     public static func clearAll() {
         sharedState.clearAll()
+
+        #if canImport(CIEEE754)
+        // Also clear C thread-local storage
+        ieee754_clear_all_exceptions()
+        #endif
     }
 
     /// Test if any exception is raised
@@ -390,4 +434,85 @@ extension IEEE_754.Exceptions {
     public static var inexact: Bool {
         testFlag(.inexact)
     }
+
+    // MARK: - Hardware FPU Exception Detection
+
+    #if canImport(CIEEE754)
+    /// Hardware FPU exception state
+    ///
+    /// Represents the current hardware floating-point unit exception flags.
+    /// These are detected from the actual FPU status register.
+    ///
+    /// ## Overview
+    ///
+    /// Unlike the thread-local software exception flags, FPU exceptions
+    /// represent the actual hardware state. These flags are set automatically
+    /// by the CPU during floating-point operations.
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// IEEE_754.Exceptions.clearFPU()
+    /// _ = 1.0 / 0.0  // Raises hardware division by zero
+    ///
+    /// let fpuState = IEEE_754.Exceptions.testFPU()
+    /// print(fpuState.divisionByZero)  // true
+    /// ```
+    public struct FPUState: Sendable, Equatable {
+        public let invalid: Bool
+        public let divisionByZero: Bool
+        public let overflow: Bool
+        public let underflow: Bool
+        public let inexact: Bool
+
+        internal init(cState: IEEE754Exceptions) {
+            self.invalid = cState.invalid != 0
+            self.divisionByZero = cState.divByZero != 0
+            self.overflow = cState.overflow != 0
+            self.underflow = cState.underflow != 0
+            self.inexact = cState.inexact != 0
+        }
+    }
+
+    /// Test hardware FPU exception flags
+    ///
+    /// Queries the hardware floating-point unit for exception flags.
+    ///
+    /// - Returns: Current FPU exception state
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// let fpuState = IEEE_754.Exceptions.testFPU()
+    /// if fpuState.overflow {
+    ///     print("FPU overflow detected")
+    /// }
+    /// ```
+    ///
+    /// ## See Also
+    ///
+    /// - `clearFPU()`: Clear hardware FPU exception flags
+    public static func testFPU() -> FPUState {
+        let cState = ieee754_test_fpu_exceptions()
+        return FPUState(cState: cState)
+    }
+
+    /// Clear hardware FPU exception flags
+    ///
+    /// Clears all exception flags in the hardware floating-point unit.
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// IEEE_754.Exceptions.clearFPU()
+    /// // All hardware FPU exception flags are now clear
+    /// ```
+    ///
+    /// ## See Also
+    ///
+    /// - `testFPU()`: Query hardware FPU exception flags
+    public static func clearFPU() {
+        ieee754_clear_fpu_exceptions()
+    }
+    #endif
 }

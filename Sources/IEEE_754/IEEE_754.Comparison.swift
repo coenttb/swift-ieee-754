@@ -6,6 +6,10 @@
 
 import Standards
 
+#if canImport(CIEEE754)
+import CIEEE754
+#endif
+
 // MARK: - IEEE 754 Comparison Operations
 
 extension IEEE_754 {
@@ -427,3 +431,188 @@ extension IEEE_754.Comparison {
         lhs.magnitude.isTotallyOrdered(belowOrEqualTo: rhs.magnitude)
     }
 }
+
+// MARK: - Signaling Comparisons
+
+#if canImport(CIEEE754)
+extension IEEE_754.Comparison {
+    /// Signaling comparison operations
+    ///
+    /// Implements IEEE 754-2019 Section 5.6.1 signaling comparison predicates.
+    ///
+    /// ## Overview
+    ///
+    /// Signaling comparisons differ from quiet comparisons in that they raise
+    /// the invalid operation exception when either operand is NaN (quiet or signaling).
+    ///
+    /// This is useful for detecting unexpected NaN values in computational pipelines,
+    /// as the exception can be caught and handled.
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// IEEE_754.Exceptions.clearAll()
+    ///
+    /// let result = IEEE_754.Comparison.Signaling.equal(Double.nan, 3.14)
+    /// // result = false
+    /// // IEEE_754.Exceptions.invalidOperation = true
+    /// ```
+    ///
+    /// ## See Also
+    ///
+    /// - IEEE 754-2019 Section 5.6.1: Signaling comparison predicates
+    /// - IEEE 754-2019 Section 7.2: Invalid operation exception
+    @frozen
+    public enum Signaling {
+        // MARK: - Double (binary64) Comparisons
+
+        /// Signaling equality comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs == rhs, false otherwise (including NaN)
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func equal(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_equal(lhs, rhs) != 0
+        }
+
+        /// Signaling less than comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs < rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func less(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_less(lhs, rhs) != 0
+        }
+
+        /// Signaling less than or equal comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs <= rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func lessEqual(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_less_equal(lhs, rhs) != 0
+        }
+
+        /// Signaling greater than comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs > rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func greater(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_greater(lhs, rhs) != 0
+        }
+
+        /// Signaling greater than or equal comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs >= rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func greaterEqual(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_greater_equal(lhs, rhs) != 0
+        }
+
+        /// Signaling not equal comparison for Double
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs != rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns true
+        /// (since NaN is not equal to anything, including itself).
+        public static func notEqual(_ lhs: Double, _ rhs: Double) -> Bool {
+            ieee754_signaling_not_equal(lhs, rhs) != 0
+        }
+
+        // MARK: - Float (binary32) Comparisons
+
+        /// Signaling equality comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs == rhs, false otherwise (including NaN)
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func equal(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_equal_f(lhs, rhs) != 0
+        }
+
+        /// Signaling less than comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs < rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func less(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_less_f(lhs, rhs) != 0
+        }
+
+        /// Signaling less than or equal comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs <= rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func lessEqual(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_less_equal_f(lhs, rhs) != 0
+        }
+
+        /// Signaling greater than comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs > rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func greater(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_greater_f(lhs, rhs) != 0
+        }
+
+        /// Signaling greater than or equal comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs >= rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns false.
+        public static func greaterEqual(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_greater_equal_f(lhs, rhs) != 0
+        }
+
+        /// Signaling not equal comparison for Float
+        ///
+        /// - Parameters:
+        ///   - lhs: Left-hand value
+        ///   - rhs: Right-hand value
+        /// - Returns: true if lhs != rhs
+        ///
+        /// If either operand is NaN, raises invalid exception and returns true
+        /// (since NaN is not equal to anything, including itself).
+        public static func notEqual(_ lhs: Float, _ rhs: Float) -> Bool {
+            ieee754_signaling_not_equal_f(lhs, rhs) != 0
+        }
+    }
+}
+#endif
