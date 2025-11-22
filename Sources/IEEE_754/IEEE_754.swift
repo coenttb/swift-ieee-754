@@ -51,6 +51,23 @@
 /// - Correct special value handling (zero, infinity, NaN, subnormal)
 /// - Sign and payload preservation for all values
 ///
+/// ## Decimal Format Limitations
+///
+/// **Important**: This is a binary-only implementation.
+///
+/// IEEE 754-2019 defines both binary and decimal interchange formats:
+/// - **Binary formats** (implemented): Binary16, Binary32, Binary64, Binary128, Binary256
+/// - **Decimal formats** (not implemented): Decimal32, Decimal64, Decimal128
+///
+/// Swift's native floating-point types (Float, Double, Float16, Float80) are binary formats.
+/// Decimal floating-point would require:
+/// - Custom decimal arithmetic types
+/// - Densely Packed Decimal (DPD) or Binary Integer Decimal (BID) encoding
+/// - Decimal-specific rounding and arithmetic operations
+///
+/// For decimal arithmetic needs, consider Foundation's `Decimal` type (not IEEE 754 compliant
+/// but provides decimal precision for financial calculations).
+///
 /// ## Performance
 ///
 /// Optimized for high-throughput scenarios:
