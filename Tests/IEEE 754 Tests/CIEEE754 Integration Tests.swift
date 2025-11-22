@@ -20,62 +20,54 @@ struct CIEEERoundingModeTests {
     }
 
     @Test func setRoundingModeToNearest() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        withRoundingMode(IEEE754_ROUND_TONEAREST) {
+            let result = ieee754_set_rounding_mode(IEEE754_ROUND_TONEAREST)
+            #expect(result == 0, "Setting rounding mode should succeed")
 
-        let result = ieee754_set_rounding_mode(IEEE754_ROUND_TONEAREST)
-        #expect(result == 0, "Setting rounding mode should succeed")
-
-        let mode = ieee754_get_rounding_mode()
-        #expect(mode == IEEE754_ROUND_TONEAREST)
+            let mode = ieee754_get_rounding_mode()
+            #expect(mode == IEEE754_ROUND_TONEAREST)
+        }
     }
 
     @Test func setRoundingModeDownward() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        withRoundingMode(IEEE754_ROUND_DOWNWARD) {
+            let result = ieee754_set_rounding_mode(IEEE754_ROUND_DOWNWARD)
+            #expect(result == 0)
 
-        let result = ieee754_set_rounding_mode(IEEE754_ROUND_DOWNWARD)
-        #expect(result == 0)
-
-        let mode = ieee754_get_rounding_mode()
-        #expect(mode == IEEE754_ROUND_DOWNWARD)
+            let mode = ieee754_get_rounding_mode()
+            #expect(mode == IEEE754_ROUND_DOWNWARD)
+        }
     }
 
     @Test func setRoundingModeUpward() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        withRoundingMode(IEEE754_ROUND_UPWARD) {
+            let result = ieee754_set_rounding_mode(IEEE754_ROUND_UPWARD)
+            #expect(result == 0)
 
-        let result = ieee754_set_rounding_mode(IEEE754_ROUND_UPWARD)
-        #expect(result == 0)
-
-        let mode = ieee754_get_rounding_mode()
-        #expect(mode == IEEE754_ROUND_UPWARD)
+            let mode = ieee754_get_rounding_mode()
+            #expect(mode == IEEE754_ROUND_UPWARD)
+        }
     }
 
     @Test func setRoundingModeTowardZero() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        withRoundingMode(IEEE754_ROUND_TOWARDZERO) {
+            let result = ieee754_set_rounding_mode(IEEE754_ROUND_TOWARDZERO)
+            #expect(result == 0)
 
-        let result = ieee754_set_rounding_mode(IEEE754_ROUND_TOWARDZERO)
-        #expect(result == 0)
-
-        let mode = ieee754_get_rounding_mode()
-        #expect(mode == IEEE754_ROUND_TOWARDZERO)
+            let mode = ieee754_get_rounding_mode()
+            #expect(mode == IEEE754_ROUND_TOWARDZERO)
+        }
     }
 
     @Test func roundingModeAffectsOperations() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        // Test that rounding mode actually affects operations
+        let result1 = withRoundingMode(IEEE754_ROUND_TOWARDZERO) {
+            1.0 / 3.0  // Should round toward zero
+        }
 
-        // Set to round toward zero
-        ieee754_set_rounding_mode(IEEE754_ROUND_TOWARDZERO)
-
-        // 1.0 / 3.0 should round toward zero
-        let result1 = 1.0 / 3.0
-
-        // Set to round upward
-        ieee754_set_rounding_mode(IEEE754_ROUND_UPWARD)
-        let result2 = 1.0 / 3.0
+        let result2 = withRoundingMode(IEEE754_ROUND_UPWARD) {
+            1.0 / 3.0  // Should round upward
+        }
 
         // Results should differ (though exact values depend on rounding)
         // At minimum, verify operations complete
@@ -353,17 +345,15 @@ struct CIEEESignalingCompareFloatTests {
 @Suite("CIEEE754 - Integration Scenarios")
 struct CIEEEIntegrationTests {
     @Test func roundingModeAndExceptions() {
-        let originalMode = ieee754_get_rounding_mode()
-        defer { ieee754_set_rounding_mode(originalMode) }
+        // Use the combined scoped API for both rounding mode and exceptions
+        let result = withRoundingModeAndClearedExceptions(IEEE754_ROUND_TOWARDZERO) {
+            let result = 10.0 / 3.0
 
-        // Set rounding mode and perform operation
-        ieee754_set_rounding_mode(IEEE754_ROUND_TOWARDZERO)
-        ieee754_clear_all_exceptions()
+            // Verify rounding mode is set within scope
+            #expect(ieee754_get_rounding_mode() == IEEE754_ROUND_TOWARDZERO)
 
-        let result = 10.0 / 3.0
-
-        // Verify rounding mode is still set
-        #expect(ieee754_get_rounding_mode() == IEEE754_ROUND_TOWARDZERO)
+            return result
+        }
 
         // Verify result is reasonable
         #expect(result > 3.0 && result < 4.0)
