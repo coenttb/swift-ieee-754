@@ -26,7 +26,7 @@ let package = Package(
     products: [
         .library(
             name: "IEEE 754",
-            targets: ["IEEE_754"]
+            targets: ["IEEE 754"]
         )
     ],
     dependencies: [
@@ -38,16 +38,16 @@ let package = Package(
             dependencies: []
         ),
         .target(
-            name: "IEEE_754",
+            name: "IEEE 754",
             dependencies: [
                 .product(name: "Standards", package: "swift-standards"),
                 .target(name: "CIEEE754", condition: .when(platforms: [.macOS, .linux, .iOS, .tvOS, .watchOS]))
             ]
         ),
         .testTarget(
-            name: "IEEE_754".tests,
+            name: "IEEE 754".tests,
             dependencies: [
-                "IEEE_754",
+                "IEEE 754",
                 .product(name: "StandardsTestSupport", package: "swift-standards")
             ]
         )
