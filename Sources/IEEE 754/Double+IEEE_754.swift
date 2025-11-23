@@ -38,10 +38,6 @@ extension Double {
     /// and properties for Double values.
     public struct IEEE754: Sendable {
         public let double: Double
-
-        init(double: Double) {
-            self.double = double
-        }
     }
 }
 

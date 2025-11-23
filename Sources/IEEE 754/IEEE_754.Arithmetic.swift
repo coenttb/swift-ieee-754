@@ -272,4 +272,3 @@ extension IEEE_754.Arithmetic {
         -value
     }
 }
-

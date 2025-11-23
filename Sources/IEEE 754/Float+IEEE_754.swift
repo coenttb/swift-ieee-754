@@ -38,10 +38,6 @@ extension Float {
     /// and properties for Float values.
     public struct IEEE754: Sendable {
         public let float: Float
-
-        init(float: Float) {
-            self.float = float
-        }
     }
 }
 

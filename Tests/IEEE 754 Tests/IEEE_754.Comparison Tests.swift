@@ -148,9 +148,9 @@ struct DoubleTotalOrderTests {
     @Test func completeOrdering() {
         // totalOrder defines a complete ordering: -NaN < -Inf < -Finite < -0 < +0 < +Finite < +Inf < +NaN
         let values: [Double] = [-Double.infinity, -100.0, -1.0, -0.0, 0.0, 1.0, 100.0, Double.infinity]
-        for i in 0..<values.count-1 {
-            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i+1]),
-                    "\(values[i]) should be ordered before \(values[i+1])")
+        for i in 0..<values.count - 1 {
+            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
+                    "\(values[i]) should be ordered before \(values[i + 1])")
         }
     }
 }
@@ -271,9 +271,9 @@ struct FloatTotalOrderTests {
 
     @Test func completeOrdering() {
         let values: [Float] = [-Float.infinity, Float(-100.0), Float(-1.0), Float(-0.0), Float(0.0), Float(1.0), Float(100.0), Float.infinity]
-        for i in 0..<values.count-1 {
-            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i+1]),
-                    "\(values[i]) should be ordered before \(values[i+1])")
+        for i in 0..<values.count - 1 {
+            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
+                    "\(values[i]) should be ordered before \(values[i + 1])")
         }
     }
 }

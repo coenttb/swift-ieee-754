@@ -32,10 +32,6 @@ extension [UInt8] {
     /// converting Float and Double values to byte arrays.
     public struct IEEE754: Sendable {
         public let bytes: [UInt8]
-
-        init(bytes: [UInt8]) {
-            self.bytes = bytes
-        }
     }
 }
 
