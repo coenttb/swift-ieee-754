@@ -4,7 +4,7 @@
 // Comprehensive tests for IEEE 754-2019 Section 5.3 Scaling operations
 
 import Testing
-import Darwin
+import Standards
 
 @testable import IEEE_754
 
@@ -136,7 +136,7 @@ struct DoubleSignificandTests {
         let value = 12.34
         let sig = IEEE_754.Scaling.significand(value)
         let exp = IEEE_754.Scaling.exponent(value)
-        let reconstructed = sig * pow(2.0, exp)
+        let reconstructed = sig * 2.0.power(Int(exp))
         #expect(reconstructed == value, "value should equal significand × 2^exponent")
     }
 
@@ -223,7 +223,7 @@ struct FloatSignificandTests {
         let value: Float = 12.34
         let sig = IEEE_754.Scaling.significand(value)
         let exp = IEEE_754.Scaling.exponent(value)
-        let reconstructed = sig * Float(pow(2.0, Double(exp)))
+        let reconstructed = sig * Float(2.0).power(Int(exp))
         #expect(reconstructed == value, "value should equal significand × 2^exponent")
     }
 }
