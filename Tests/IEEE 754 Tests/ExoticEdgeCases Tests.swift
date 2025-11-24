@@ -143,7 +143,7 @@ struct DoubleExponentSweepTests {
         for expValue in exponents {
             // Create a Double with this exponent and significand = 1.0
             let biasedExp = expValue - 1023
-            let value = pow(2.0, Double(biasedExp))
+            let value = Double(biasedExp).power(2)
 
             let bytes = value.bytes()
             let restored = Double(bytes: bytes)
@@ -187,7 +187,7 @@ struct FloatExponentSweepTests {
 
         for expValue in exponents {
             let biasedExp = expValue - 127
-            let value = pow(Float(2.0), Float(biasedExp))
+            let value = Float(biasedExp).power(2)
 
             let bytes = value.bytes()
             let restored = Float(bytes: bytes)

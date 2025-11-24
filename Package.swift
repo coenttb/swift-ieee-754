@@ -48,6 +48,7 @@ let package = Package(
             name: "IEEE 754".tests,
             dependencies: [
                 "IEEE 754",
+                .target(name: "CIEEE754", condition: .when(platforms: [.macOS, .linux, .iOS, .tvOS, .watchOS])),
                 .product(name: "StandardsTestSupport", package: "swift-standards")
             ]
         )
