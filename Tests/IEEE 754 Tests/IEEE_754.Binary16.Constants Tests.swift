@@ -83,74 +83,79 @@ struct Binary16ConsistencyTests {
 }
 
 #if canImport(FloatingPointTypes) && compiler(>=5.9)
-@Suite("IEEE_754.Binary16 Constants - Value Tests", .enabled(if: {
-    if #available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *) {
-        return true
-    }
-    return false
-}()))
-@available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-struct Binary16ValueTests {
-    @Test func epsilonValue() {
-        let epsilon = IEEE_754.Binary16.epsilon
-        #expect(epsilon == 0x1.0p-10, "Binary16 epsilon should be 2^-10")
-    }
+    @Suite(
+        "IEEE_754.Binary16 Constants - Value Tests",
+        .enabled(
+            if: {
+                if #available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *) {
+                    return true
+                }
+                return false
+            }()))
+    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+    struct Binary16ValueTests {
+        @Test func epsilonValue() {
+            let epsilon = IEEE_754.Binary16.epsilon
+            #expect(epsilon == 0x1.0p-10, "Binary16 epsilon should be 2^-10")
+        }
 
-    @Test func minNormal() {
-        let minNorm = IEEE_754.Binary16.minNormal
-        #expect(minNorm == Float16.leastNormalMagnitude, "minNormal should equal Float16.leastNormalMagnitude")
-        #expect(minNorm.isNormal, "minNormal should be a normal number")
-    }
+        @Test func minNormal() {
+            let minNorm = IEEE_754.Binary16.minNormal
+            #expect(minNorm == Float16.leastNormalMagnitude, "minNormal should equal Float16.leastNormalMagnitude")
+            #expect(minNorm.isNormal, "minNormal should be a normal number")
+        }
 
-    @Test func minSubnormal() {
-        let minSubnorm = IEEE_754.Binary16.minSubnormal
-        #expect(minSubnorm == Float16.leastNonzeroMagnitude, "minSubnormal should equal Float16.leastNonzeroMagnitude")
-        #expect(minSubnorm.isSubnormal, "minSubnormal should be subnormal")
-    }
+        @Test func minSubnormal() {
+            let minSubnorm = IEEE_754.Binary16.minSubnormal
+            #expect(
+                minSubnorm == Float16.leastNonzeroMagnitude, "minSubnormal should equal Float16.leastNonzeroMagnitude")
+            #expect(minSubnorm.isSubnormal, "minSubnormal should be subnormal")
+        }
 
-    @Test func maxNormal() {
-        let maxNorm = IEEE_754.Binary16.maxNormal
-        #expect(maxNorm == Float16.greatestFiniteMagnitude, "maxNormal should equal Float16.greatestFiniteMagnitude")
-        #expect(maxNorm.isNormal, "maxNormal should be a normal number")
-        #expect(maxNorm.isFinite, "maxNormal should be finite")
-    }
+        @Test func maxNormal() {
+            let maxNorm = IEEE_754.Binary16.maxNormal
+            #expect(
+                maxNorm == Float16.greatestFiniteMagnitude, "maxNormal should equal Float16.greatestFiniteMagnitude")
+            #expect(maxNorm.isNormal, "maxNormal should be a normal number")
+            #expect(maxNorm.isFinite, "maxNormal should be finite")
+        }
 
-    @Test func positiveZero() {
-        let pz = IEEE_754.Binary16.SpecialValues.positiveZero
-        #expect(pz == 0.0, "positiveZero should equal 0.0")
-        #expect(pz.isZero, "positiveZero should be zero")
-        #expect(pz.sign == .plus, "positiveZero should have positive sign")
-    }
+        @Test func positiveZero() {
+            let pz = IEEE_754.Binary16.SpecialValues.positiveZero
+            #expect(pz == 0.0, "positiveZero should equal 0.0")
+            #expect(pz.isZero, "positiveZero should be zero")
+            #expect(pz.sign == .plus, "positiveZero should have positive sign")
+        }
 
-    @Test func negativeZero() {
-        let nz = IEEE_754.Binary16.SpecialValues.negativeZero
-        #expect(nz == 0.0, "negativeZero should equal 0.0")
-        #expect(nz.isZero, "negativeZero should be zero")
-        #expect(nz.sign == .minus, "negativeZero should have negative sign")
-    }
+        @Test func negativeZero() {
+            let nz = IEEE_754.Binary16.SpecialValues.negativeZero
+            #expect(nz == 0.0, "negativeZero should equal 0.0")
+            #expect(nz.isZero, "negativeZero should be zero")
+            #expect(nz.sign == .minus, "negativeZero should have negative sign")
+        }
 
-    @Test func positiveInfinity() {
-        let pinf = IEEE_754.Binary16.SpecialValues.positiveInfinity
-        #expect(pinf == Float16.infinity, "positiveInfinity should equal Float16.infinity")
-        #expect(pinf.isInfinite, "positiveInfinity should be infinite")
-    }
+        @Test func positiveInfinity() {
+            let pinf = IEEE_754.Binary16.SpecialValues.positiveInfinity
+            #expect(pinf == Float16.infinity, "positiveInfinity should equal Float16.infinity")
+            #expect(pinf.isInfinite, "positiveInfinity should be infinite")
+        }
 
-    @Test func negativeInfinity() {
-        let ninf = IEEE_754.Binary16.SpecialValues.negativeInfinity
-        #expect(ninf == -Float16.infinity, "negativeInfinity should equal -Float16.infinity")
-        #expect(ninf.isInfinite, "negativeInfinity should be infinite")
-    }
+        @Test func negativeInfinity() {
+            let ninf = IEEE_754.Binary16.SpecialValues.negativeInfinity
+            #expect(ninf == -Float16.infinity, "negativeInfinity should equal -Float16.infinity")
+            #expect(ninf.isInfinite, "negativeInfinity should be infinite")
+        }
 
-    @Test func quietNaN() {
-        let qnan = IEEE_754.Binary16.SpecialValues.quietNaN
-        #expect(qnan.isNaN, "quietNaN should be NaN")
-        #expect(!qnan.isSignalingNaN, "quietNaN should not be signaling")
-    }
+        @Test func quietNaN() {
+            let qnan = IEEE_754.Binary16.SpecialValues.quietNaN
+            #expect(qnan.isNaN, "quietNaN should be NaN")
+            #expect(!qnan.isSignalingNaN, "quietNaN should not be signaling")
+        }
 
-    @Test func signalingNaN() {
-        let snan = IEEE_754.Binary16.SpecialValues.signalingNaN
-        #expect(snan.isNaN, "signalingNaN should be NaN")
-        #expect(snan.isSignalingNaN, "signalingNaN should be signaling")
+        @Test func signalingNaN() {
+            let snan = IEEE_754.Binary16.SpecialValues.signalingNaN
+            #expect(snan.isNaN, "signalingNaN should be NaN")
+            #expect(snan.isSignalingNaN, "signalingNaN should be signaling")
+        }
     }
-}
 #endif

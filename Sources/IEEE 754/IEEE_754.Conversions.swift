@@ -92,57 +92,57 @@ extension IEEE_754.Conversions {
     }
 
     #if canImport(FloatingPointTypes) && compiler(>=5.9)
-    /// Convert Float16 to Float - IEEE 754 `convertFormat`
-    ///
-    /// Converts a Float16 (binary16) to Float (binary32). This conversion is
-    /// always exact.
-    ///
-    /// - Parameter value: The Float16 value
-    /// - Returns: The value as Float
-    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
-    public static func float16ToFloat(_ value: Float16) -> Float {
-        Float(value)
-    }
+        /// Convert Float16 to Float - IEEE 754 `convertFormat`
+        ///
+        /// Converts a Float16 (binary16) to Float (binary32). This conversion is
+        /// always exact.
+        ///
+        /// - Parameter value: The Float16 value
+        /// - Returns: The value as Float
+        @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+        @inlinable
+        public static func float16ToFloat(_ value: Float16) -> Float {
+            Float(value)
+        }
 
-    /// Convert Float to Float16 - IEEE 754 `convertFormat`
-    ///
-    /// Converts a Float (binary32) to Float16 (binary16). This conversion may
-    /// round and may overflow/underflow.
-    ///
-    /// - Parameter value: The Float value
-    /// - Returns: The value as Float16
-    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
-    public static func floatToFloat16(_ value: Float) -> Float16 {
-        Float16(value)
-    }
+        /// Convert Float to Float16 - IEEE 754 `convertFormat`
+        ///
+        /// Converts a Float (binary32) to Float16 (binary16). This conversion may
+        /// round and may overflow/underflow.
+        ///
+        /// - Parameter value: The Float value
+        /// - Returns: The value as Float16
+        @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+        @inlinable
+        public static func floatToFloat16(_ value: Float) -> Float16 {
+            Float16(value)
+        }
 
-    /// Convert Float16 to Double - IEEE 754 `convertFormat`
-    ///
-    /// Converts a Float16 (binary16) to Double (binary64). This conversion is
-    /// always exact.
-    ///
-    /// - Parameter value: The Float16 value
-    /// - Returns: The value as Double
-    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
-    public static func float16ToDouble(_ value: Float16) -> Double {
-        Double(value)
-    }
+        /// Convert Float16 to Double - IEEE 754 `convertFormat`
+        ///
+        /// Converts a Float16 (binary16) to Double (binary64). This conversion is
+        /// always exact.
+        ///
+        /// - Parameter value: The Float16 value
+        /// - Returns: The value as Double
+        @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+        @inlinable
+        public static func float16ToDouble(_ value: Float16) -> Double {
+            Double(value)
+        }
 
-    /// Convert Double to Float16 - IEEE 754 `convertFormat`
-    ///
-    /// Converts a Double (binary64) to Float16 (binary16). This conversion may
-    /// round and may overflow/underflow.
-    ///
-    /// - Parameter value: The Double value
-    /// - Returns: The value as Float16
-    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    @inlinable
-    public static func doubleToFloat16(_ value: Double) -> Float16 {
-        Float16(value)
-    }
+        /// Convert Double to Float16 - IEEE 754 `convertFormat`
+        ///
+        /// Converts a Double (binary64) to Float16 (binary16). This conversion may
+        /// round and may overflow/underflow.
+        ///
+        /// - Parameter value: The Double value
+        /// - Returns: The value as Float16
+        @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+        @inlinable
+        public static func doubleToFloat16(_ value: Double) -> Float16 {
+            Float16(value)
+        }
     #endif
 }
 

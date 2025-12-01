@@ -182,7 +182,7 @@ struct IntToFloatTests {
     }
 
     @Test func largeIntegers() {
-        let large = 16777217  // 2^24 + 1, cannot be exactly represented in Float
+        let large = 16_777_217  // 2^24 + 1, cannot be exactly represented in Float
         let result = IEEE_754.Conversions.intToFloat(large)
         #expect(result == Float(large), "Should match Swift's conversion (with rounding)")
     }

@@ -203,8 +203,8 @@ extension IEEE_754.Payload {
         // Fraction: 1xxx... (MSB=1 for quiet, rest is payload)
 
         let exponentMask: UInt64 = 0x7FF0_0000_0000_0000
-        let quietBit: UInt64     = 0x0008_0000_0000_0000
-        let payloadMask: UInt64  = 0x0007_FFFF_FFFF_FFFF
+        let quietBit: UInt64 = 0x0008_0000_0000_0000
+        let payloadMask: UInt64 = 0x0007_FFFF_FFFF_FFFF
 
         let bits = exponentMask | quietBit | (payload & payloadMask)
         return Double(bitPattern: bits)
@@ -234,7 +234,7 @@ extension IEEE_754.Payload {
         // Fraction: 0xxx... where xxx ≠ 0 (MSB=0 for signaling, rest is payload)
 
         let exponentMask: UInt64 = 0x7FF0_0000_0000_0000
-        let payloadMask: UInt64  = 0x0007_FFFF_FFFF_FFFF
+        let payloadMask: UInt64 = 0x0007_FFFF_FFFF_FFFF
 
         // Ensure payload is non-zero (required for signaling NaN)
         let actualPayload = (payload & payloadMask) == 0 ? 1 : (payload & payloadMask)
@@ -309,8 +309,8 @@ extension IEEE_754.Payload {
         // Fraction: 1xxx... (MSB=1 for quiet)
 
         let exponentMask: UInt32 = 0x7F80_0000
-        let quietBit: UInt32     = 0x0040_0000
-        let payloadMask: UInt32  = 0x001F_FFFF
+        let quietBit: UInt32 = 0x0040_0000
+        let payloadMask: UInt32 = 0x001F_FFFF
 
         let bits = exponentMask | quietBit | (payload & payloadMask)
         return Float(bitPattern: bits)
@@ -325,7 +325,7 @@ extension IEEE_754.Payload {
     @inlinable
     public static func encodeSignalingNaN(payload: UInt32 = 1) -> Float {
         let exponentMask: UInt32 = 0x7F80_0000
-        let payloadMask: UInt32  = 0x001F_FFFF
+        let payloadMask: UInt32 = 0x001F_FFFF
 
         let actualPayload = (payload & payloadMask) == 0 ? 1 : (payload & payloadMask)
 

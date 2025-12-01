@@ -3,10 +3,10 @@
 //
 // Integration tests for C target FPU control functions
 
+import CIEEE754
 import Testing
 
 @testable import IEEE_754
-import CIEEE754
 
 // MARK: - Rounding Mode Tests
 
@@ -15,8 +15,9 @@ struct CIEEERoundingModeTests {
     @Test func getRoundingMode() {
         // Should be able to query current rounding mode
         let mode = ieee754_get_rounding_mode()
-        #expect(mode == IEEE754_ROUND_TONEAREST || mode == IEEE754_ROUND_DOWNWARD ||
-                mode == IEEE754_ROUND_UPWARD || mode == IEEE754_ROUND_TOWARDZERO)
+        #expect(
+            mode == IEEE754_ROUND_TONEAREST || mode == IEEE754_ROUND_DOWNWARD || mode == IEEE754_ROUND_UPWARD
+                || mode == IEEE754_ROUND_TOWARDZERO)
     }
 
     @Test func setRoundingModeToNearest() {

@@ -3,8 +3,8 @@
 //
 // Comprehensive tests for IEEE 754-2019 Section 5.3 Scaling operations
 
-import Testing
 import Standards
+import Testing
 
 @testable import IEEE_754
 
@@ -20,7 +20,7 @@ struct DoubleScaleBTests {
         (3.14, 2, 12.56),
         (1.0, -1, 0.5),
         (1.0, -2, 0.25),
-        (8.0, -3, 1.0)
+        (8.0, -3, 1.0),
     ])
     func powersOfTwo(value: Double, n: Int, expected: Double) {
         let result = IEEE_754.Scaling.scaleB(value, n)
@@ -68,7 +68,7 @@ struct DoubleLogBTests {
         (8.0, 3),
         (1024.0, 10),
         (0.5, -1),
-        (0.25, -2)
+        (0.25, -2),
     ])
     func powersOfTwo(value: Double, expected: Int) {
         #expect(IEEE_754.Scaling.logB(value) == expected, "logB(\(value)) should be \(expected)")
@@ -106,7 +106,7 @@ struct DoubleExponentTests {
         (1.0, 0.0),
         (2.0, 1.0),
         (8.0, 3.0),
-        (0.5, -1.0)
+        (0.5, -1.0),
     ])
     func powersOfTwo(value: Double, expected: Double) {
         #expect(IEEE_754.Scaling.exponent(value) == expected, "exponent(\(value)) should be \(expected)")
@@ -156,7 +156,7 @@ struct FloatScaleBTests {
         (Float(1.0), 1, Float(2.0)),
         (Float(1.0), 2, Float(4.0)),
         (Float(1.0), 10, Float(1024.0)),
-        (Float(1.0), -1, Float(0.5))
+        (Float(1.0), -1, Float(0.5)),
     ])
     func powersOfTwo(value: Float, n: Int, expected: Float) {
         let result = IEEE_754.Scaling.scaleB(value, n)
@@ -181,7 +181,7 @@ struct FloatLogBTests {
         (Float(1.0), 0),
         (Float(2.0), 1),
         (Float(8.0), 3),
-        (Float(0.5), -1)
+        (Float(0.5), -1),
     ])
     func powersOfTwo(value: Float, expected: Int) {
         #expect(IEEE_754.Scaling.logB(value) == expected, "logB(\(value)) should be \(expected)")
@@ -199,7 +199,7 @@ struct FloatExponentTests {
     @Test(arguments: [
         (Float(1.0), Float(0.0)),
         (Float(2.0), Float(1.0)),
-        (Float(8.0), Float(3.0))
+        (Float(8.0), Float(3.0)),
     ])
     func powersOfTwo(value: Float, expected: Float) {
         #expect(IEEE_754.Scaling.exponent(value) == expected, "exponent(\(value)) should be \(expected)")

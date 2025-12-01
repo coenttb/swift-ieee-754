@@ -16,19 +16,19 @@ struct DoublePowersOfTwoTests {
     @Test func `powers of 2 have exact representations`() {
         // Powers of 2 should round-trip perfectly with exact bit patterns
         let powers: [(Int, Double)] = [
-            (0, 1.0),                           // 2^0
-            (1, 2.0),                           // 2^1
-            (2, 4.0),                           // 2^2
-            (3, 8.0),                           // 2^3
-            (10, 1024.0),                       // 2^10
-            (20, 1048576.0),                    // 2^20
-            (30, 1073741824.0),                 // 2^30
-            (52, 4503599627370496.0),           // 2^52 (significand precision boundary)
-            (53, 9007199254740992.0),           // 2^53 (last exactly representable integer)
-            (100, 1.2676506002282294e30),       // 2^100
-            (500, 3.273390607896142e150),       // 2^500
-            (1000, 1.0715086071862673e301),     // 2^1000
-            (1023, 8.98846567431158e307),       // 2^1023 (near max exponent)
+            (0, 1.0),  // 2^0
+            (1, 2.0),  // 2^1
+            (2, 4.0),  // 2^2
+            (3, 8.0),  // 2^3
+            (10, 1024.0),  // 2^10
+            (20, 1048576.0),  // 2^20
+            (30, 1073741824.0),  // 2^30
+            (52, 4503599627370496.0),  // 2^52 (significand precision boundary)
+            (53, 9007199254740992.0),  // 2^53 (last exactly representable integer)
+            (100, 1.2676506002282294e30),  // 2^100
+            (500, 3.273390607896142e150),  // 2^500
+            (1000, 1.0715086071862673e301),  // 2^1000
+            (1023, 8.98846567431158e307),  // 2^1023 (near max exponent)
         ]
 
         for (exponent, value) in powers {
@@ -41,16 +41,16 @@ struct DoublePowersOfTwoTests {
 
     @Test func `negative powers of 2 have exact representations`() {
         let powers: [(Int, Double)] = [
-            (-1, 0.5),                          // 2^-1
-            (-2, 0.25),                         // 2^-2
-            (-3, 0.125),                        // 2^-3
-            (-10, 0.0009765625),                // 2^-10
-            (-20, 9.5367431640625e-7),          // 2^-20
-            (-52, 2.220446049250313e-16),       // 2^-52 (epsilon)
-            (-100, 7.888609052210118e-31),      // 2^-100
-            (-500, 3.054936363499605e-151),     // 2^-500
-            (-1022, 2.2250738585072014e-308),   // 2^-1022 (min normal exponent)
-            (-1074, 4.9406564584124654e-324),   // 2^-1074 (min subnormal)
+            (-1, 0.5),  // 2^-1
+            (-2, 0.25),  // 2^-2
+            (-3, 0.125),  // 2^-3
+            (-10, 0.0009765625),  // 2^-10
+            (-20, 9.5367431640625e-7),  // 2^-20
+            (-52, 2.220446049250313e-16),  // 2^-52 (epsilon)
+            (-100, 7.888609052210118e-31),  // 2^-100
+            (-500, 3.054936363499605e-151),  // 2^-500
+            (-1022, 2.2250738585072014e-308),  // 2^-1022 (min normal exponent)
+            (-1074, 4.9406564584124654e-324),  // 2^-1074 (min subnormal)
         ]
 
         for (exponent, value) in powers {
@@ -63,11 +63,11 @@ struct DoublePowersOfTwoTests {
 
     @Test func `negative powers of 2 are negative`() {
         let powers: [Double] = [
-            -1.0,     // -2^0
-            -2.0,     // -2^1
-            -4.0,     // -2^2
-            -0.5,     // -2^-1
-            -0.25,    // -2^-2
+            -1.0,  // -2^0
+            -2.0,  // -2^1
+            -4.0,  // -2^2
+            -0.5,  // -2^-1
+            -0.25,  // -2^-2
         ]
 
         for value in powers {
@@ -88,10 +88,10 @@ struct FloatPowersOfTwoTests {
             (1, 2.0),
             (2, 4.0),
             (10, 1024.0),
-            (23, 8388608.0),            // 2^23 (significand precision boundary)
-            (24, 16777216.0),           // 2^24 (last exactly representable integer)
-            (100, 1.2676506e30),        // 2^100
-            (127, 1.7014118e38),        // 2^127 (near max exponent)
+            (23, 8388608.0),  // 2^23 (significand precision boundary)
+            (24, 16777216.0),  // 2^24 (last exactly representable integer)
+            (100, 1.2676506e30),  // 2^100
+            (127, 1.7014118e38),  // 2^127 (near max exponent)
         ]
 
         for (exponent, value) in powers {
@@ -107,9 +107,9 @@ struct FloatPowersOfTwoTests {
             (-1, 0.5),
             (-2, 0.25),
             (-10, 0.0009765625),
-            (-23, 1.1920929e-7),        // 2^-23 (epsilon)
-            (-126, 1.1754944e-38),      // 2^-126 (min normal exponent)
-            (-149, 1.4012985e-45),      // 2^-149 (min subnormal)
+            (-23, 1.1920929e-7),  // 2^-23 (epsilon)
+            (-126, 1.1754944e-38),  // 2^-126 (min normal exponent)
+            (-149, 1.4012985e-45),  // 2^-149 (min subnormal)
         ]
 
         for (exponent, value) in powers {
@@ -129,15 +129,15 @@ struct DoubleExponentSweepTests {
         // Test representative exponent values across the entire range
         // Exponent field values: 0 (subnormal), 1-2046 (normal), 2047 (inf/NaN)
         let exponents: [Int] = [
-            1,      // Minimum normal exponent
+            1,  // Minimum normal exponent
             10,
             100,
             500,
             1000,
-            1023,   // Exponent bias
+            1023,  // Exponent bias
             1500,
             2000,
-            2046,   // Maximum normal exponent
+            2046,  // Maximum normal exponent
         ]
 
         for expValue in exponents {
@@ -175,14 +175,14 @@ struct DoubleExponentSweepTests {
 struct FloatExponentSweepTests {
     @Test func `sample exponent values across range`() {
         let exponents: [Int] = [
-            1,      // Minimum normal exponent
+            1,  // Minimum normal exponent
             10,
             50,
             100,
-            127,    // Exponent bias
+            127,  // Exponent bias
             150,
             200,
-            254,    // Maximum normal exponent
+            254,  // Maximum normal exponent
         ]
 
         for expValue in exponents {
@@ -394,12 +394,12 @@ struct KnownProblematicValuesTests {
 struct ExactBinaryFractionsTests {
     @Test func `powers of 2 fractions are exact`() {
         let fractions: [Double] = [
-            0.5,        // 2^-1
-            0.25,       // 2^-2
-            0.125,      // 2^-3
-            0.0625,     // 2^-4
-            0.03125,    // 2^-5
-            0.015625,   // 2^-6
+            0.5,  // 2^-1
+            0.25,  // 2^-2
+            0.125,  // 2^-3
+            0.0625,  // 2^-4
+            0.03125,  // 2^-5
+            0.015625,  // 2^-6
         ]
 
         for value in fractions {
@@ -415,10 +415,10 @@ struct ExactBinaryFractionsTests {
 
     @Test func `sums of powers of 2 are exact`() {
         let values: [Double] = [
-            0.75,       // 0.5 + 0.25
-            0.375,      // 0.25 + 0.125
-            0.875,      // 0.5 + 0.25 + 0.125
-            0.6875,     // 0.5 + 0.125 + 0.0625
+            0.75,  // 0.5 + 0.25
+            0.375,  // 0.25 + 0.125
+            0.875,  // 0.5 + 0.25 + 0.125
+            0.6875,  // 0.5 + 0.125 + 0.0625
         ]
 
         for value in values {
@@ -434,8 +434,8 @@ struct ExactBinaryFractionsTests {
             0.25,
             0.125,
             0.0625,
-            0.75,       // 0.5 + 0.25
-            0.875,      // 0.5 + 0.25 + 0.125
+            0.75,  // 0.5 + 0.25
+            0.875,  // 0.5 + 0.25 + 0.125
         ]
 
         for value in fractions {
@@ -473,10 +473,10 @@ struct LargeIntegerBoundariesTests {
 
     @Test func `integer boundaries for Double`() {
         let boundaries: [Double] = [
-            9007199254740992.0,     // 2^53 (last exact integer)
-            9007199254740991.0,     // 2^53 - 1 (largest odd exact integer)
-            -9007199254740992.0,    // -2^53
-            -9007199254740991.0,    // -(2^53 - 1)
+            9007199254740992.0,  // 2^53 (last exact integer)
+            9007199254740991.0,  // 2^53 - 1 (largest odd exact integer)
+            -9007199254740992.0,  // -2^53
+            -9007199254740991.0,  // -(2^53 - 1)
         ]
 
         for value in boundaries {
@@ -498,10 +498,10 @@ struct LargeIntegerBoundariesTests {
 
     @Test func `integer boundaries for Float`() {
         let boundaries: [Float] = [
-            16777216.0,     // 2^24 (last exact integer)
-            16777215.0,     // 2^24 - 1
-            -16777216.0,    // -2^24
-            -16777215.0,    // -(2^24 - 1)
+            16777216.0,  // 2^24 (last exact integer)
+            16777215.0,  // 2^24 - 1
+            -16777216.0,  // -2^24
+            -16777215.0,  // -(2^24 - 1)
         ]
 
         for value in boundaries {
@@ -558,8 +558,8 @@ struct CrossFormatPrecisionTests {
     @Test func `precision loss scenarios`() {
         // Double values that lose precision when converted to Float
         let doubleValues: [Double] = [
-            1.2345678901234567,     // More precision than Float can hold
-            0.123456789012345,      // Small with high precision
+            1.2345678901234567,  // More precision than Float can hold
+            0.123456789012345,  // Small with high precision
         ]
 
         for doubleVal in doubleValues {

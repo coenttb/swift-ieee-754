@@ -29,8 +29,11 @@ struct DoubleIsEqualTests {
 
     @Test func infinities() {
         #expect(IEEE_754.Comparison.isEqual(Double.infinity, Double.infinity), "Infinity should equal itself")
-        #expect(IEEE_754.Comparison.isEqual(-Double.infinity, -Double.infinity), "Negative infinity should equal itself")
-        #expect(!IEEE_754.Comparison.isEqual(Double.infinity, -Double.infinity), "Positive and negative infinity should not be equal")
+        #expect(
+            IEEE_754.Comparison.isEqual(-Double.infinity, -Double.infinity), "Negative infinity should equal itself")
+        #expect(
+            !IEEE_754.Comparison.isEqual(Double.infinity, -Double.infinity),
+            "Positive and negative infinity should not be equal")
     }
 }
 
@@ -52,7 +55,7 @@ struct DoubleIsLessTests {
     @Test(arguments: [
         (2.71, 3.14, true),
         (3.14, 2.71, false),
-        (3.14, 3.14, false)
+        (3.14, 3.14, false),
     ])
     func lessThan(lhs: Double, rhs: Double, expected: Bool) {
         #expect(IEEE_754.Comparison.isLess(lhs, rhs) == expected)
@@ -76,7 +79,7 @@ struct DoubleIsLessEqualTests {
     @Test(arguments: [
         (2.71, 3.14, true),
         (3.14, 3.14, true),
-        (3.14, 2.71, false)
+        (3.14, 2.71, false),
     ])
     func lessEqual(lhs: Double, rhs: Double, expected: Bool) {
         #expect(IEEE_754.Comparison.isLessEqual(lhs, rhs) == expected)
@@ -93,7 +96,7 @@ struct DoubleIsGreaterTests {
     @Test(arguments: [
         (3.14, 2.71, true),
         (2.71, 3.14, false),
-        (3.14, 3.14, false)
+        (3.14, 3.14, false),
     ])
     func greaterThan(lhs: Double, rhs: Double, expected: Bool) {
         #expect(IEEE_754.Comparison.isGreater(lhs, rhs) == expected)
@@ -110,7 +113,7 @@ struct DoubleIsGreaterEqualTests {
     @Test(arguments: [
         (3.14, 2.71, true),
         (3.14, 3.14, true),
-        (2.71, 3.14, false)
+        (2.71, 3.14, false),
     ])
     func greaterEqual(lhs: Double, rhs: Double, expected: Bool) {
         #expect(IEEE_754.Comparison.isGreaterEqual(lhs, rhs) == expected)
@@ -128,7 +131,8 @@ struct DoubleTotalOrderTests {
         // NaN values are ordered after all non-NaN values
         #expect(!IEEE_754.Comparison.totalOrder(Double.nan, 3.14), "NaN should not be ordered before numbers")
         #expect(IEEE_754.Comparison.totalOrder(3.14, Double.nan), "Numbers should be ordered before NaN")
-        #expect(!IEEE_754.Comparison.totalOrder(Double.nan, Double.infinity), "NaN should not be ordered before infinity")
+        #expect(
+            !IEEE_754.Comparison.totalOrder(Double.nan, Double.infinity), "NaN should not be ordered before infinity")
     }
 
     @Test func infinityOrdering() {
@@ -149,8 +153,9 @@ struct DoubleTotalOrderTests {
         // totalOrder defines a complete ordering: -NaN < -Inf < -Finite < -0 < +0 < +Finite < +Inf < +NaN
         let values: [Double] = [-Double.infinity, -100.0, -1.0, -0.0, 0.0, 1.0, 100.0, Double.infinity]
         for i in 0..<values.count - 1 {
-            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
-                    "\(values[i]) should be ordered before \(values[i + 1])")
+            #expect(
+                IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
+                "\(values[i]) should be ordered before \(values[i + 1])")
         }
     }
 }
@@ -181,7 +186,7 @@ struct FloatIsEqualTests {
     @Test(arguments: [
         (Float(3.14), Float(3.14), true),
         (Float(3.14), Float(2.71), false),
-        (Float(0.0), Float(-0.0), true)
+        (Float(0.0), Float(-0.0), true),
     ])
     func equality(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isEqual(lhs, rhs) == expected)
@@ -197,7 +202,7 @@ struct FloatIsEqualTests {
 struct FloatIsNotEqualTests {
     @Test(arguments: [
         (Float(3.14), Float(2.71), true),
-        (Float(3.14), Float(3.14), false)
+        (Float(3.14), Float(3.14), false),
     ])
     func inequality(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isNotEqual(lhs, rhs) == expected)
@@ -209,7 +214,7 @@ struct FloatIsLessTests {
     @Test(arguments: [
         (Float(2.71), Float(3.14), true),
         (Float(3.14), Float(2.71), false),
-        (Float(3.14), Float(3.14), false)
+        (Float(3.14), Float(3.14), false),
     ])
     func lessThan(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isLess(lhs, rhs) == expected)
@@ -226,7 +231,7 @@ struct FloatIsLessEqualTests {
     @Test(arguments: [
         (Float(2.71), Float(3.14), true),
         (Float(3.14), Float(3.14), true),
-        (Float(3.14), Float(2.71), false)
+        (Float(3.14), Float(2.71), false),
     ])
     func lessEqual(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isLessEqual(lhs, rhs) == expected)
@@ -238,7 +243,7 @@ struct FloatIsGreaterTests {
     @Test(arguments: [
         (Float(3.14), Float(2.71), true),
         (Float(2.71), Float(3.14), false),
-        (Float(3.14), Float(3.14), false)
+        (Float(3.14), Float(3.14), false),
     ])
     func greaterThan(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isGreater(lhs, rhs) == expected)
@@ -250,7 +255,7 @@ struct FloatIsGreaterEqualTests {
     @Test(arguments: [
         (Float(3.14), Float(2.71), true),
         (Float(3.14), Float(3.14), true),
-        (Float(2.71), Float(3.14), false)
+        (Float(2.71), Float(3.14), false),
     ])
     func greaterEqual(lhs: Float, rhs: Float, expected: Bool) {
         #expect(IEEE_754.Comparison.isGreaterEqual(lhs, rhs) == expected)
@@ -270,10 +275,14 @@ struct FloatTotalOrderTests {
     }
 
     @Test func completeOrdering() {
-        let values: [Float] = [-Float.infinity, Float(-100.0), Float(-1.0), Float(-0.0), Float(0.0), Float(1.0), Float(100.0), Float.infinity]
+        let values: [Float] = [
+            -Float.infinity, Float(-100.0), Float(-1.0), Float(-0.0), Float(0.0), Float(1.0), Float(100.0),
+            Float.infinity,
+        ]
         for i in 0..<values.count - 1 {
-            #expect(IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
-                    "\(values[i]) should be ordered before \(values[i + 1])")
+            #expect(
+                IEEE_754.Comparison.totalOrder(values[i], values[i + 1]),
+                "\(values[i]) should be ordered before \(values[i + 1])")
         }
     }
 }
@@ -341,7 +350,7 @@ struct ComparisonPredicateTests {
             .ordering(.less(orEqual: false)),
             .ordering(.less(orEqual: true)),
             .ordering(.greater(orEqual: false)),
-            .ordering(.greater(orEqual: true))
+            .ordering(.greater(orEqual: true)),
         ]
 
         for predicate in predicates {

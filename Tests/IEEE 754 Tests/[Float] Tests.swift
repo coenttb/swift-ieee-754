@@ -25,7 +25,7 @@ struct FloatArrayTests {
         let bytes: [UInt8] = [
             0xD0, 0x0F, 0x49, 0x40,  // 3.14159
             0x00, 0x00, 0x80, 0x3F,  // 1.0
-            0x00, 0x00, 0x00, 0x40   // 2.0
+            0x00, 0x00, 0x00, 0x40,  // 2.0
         ]
         let floats = [Float](bytes: bytes)
         #expect(floats != nil)
@@ -62,7 +62,7 @@ struct FloatArrayTests {
     func bigEndian() {
         let bytes: [UInt8] = [
             0x40, 0x49, 0x0F, 0xD0,  // 3.14159 (big-endian)
-            0x3F, 0x80, 0x00, 0x00   // 1.0 (big-endian)
+            0x3F, 0x80, 0x00, 0x00,  // 1.0 (big-endian)
         ]
         let floats = [Float](bytes: bytes, endianness: .big)
         #expect(floats != nil)

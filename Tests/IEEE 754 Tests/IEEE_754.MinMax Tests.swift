@@ -125,8 +125,12 @@ struct DoubleMaximumMagnitudeTests {
     }
 
     @Test func infinities() {
-        #expect(IEEE_754.MinMax.maximumMagnitude(Double.infinity, 100.0) == Double.infinity, "Infinity has largest magnitude")
-        #expect(IEEE_754.MinMax.maximumMagnitude(-Double.infinity, 100.0) == -Double.infinity, "Negative infinity has largest magnitude")
+        #expect(
+            IEEE_754.MinMax.maximumMagnitude(Double.infinity, 100.0) == Double.infinity,
+            "Infinity has largest magnitude")
+        #expect(
+            IEEE_754.MinMax.maximumMagnitude(-Double.infinity, 100.0) == -Double.infinity,
+            "Negative infinity has largest magnitude")
     }
 }
 
@@ -281,7 +285,7 @@ struct MinMaxOperationTests {
             .magnitude(.minimum, preferNumber: false),
             .magnitude(.maximum, preferNumber: false),
             .magnitude(.minimum, preferNumber: true),
-            .magnitude(.maximum, preferNumber: true)
+            .magnitude(.maximum, preferNumber: true),
         ]
 
         for operation in operations {

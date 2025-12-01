@@ -22,7 +22,7 @@ struct DoubleIsSignMinusTests {
         (Double.infinity, false),
         (-Double.infinity, true),
         (Double.leastNonzeroMagnitude, false),
-        (-Double.leastNonzeroMagnitude, true)
+        (-Double.leastNonzeroMagnitude, true),
     ])
     func isSignMinus(value: Double, expected: Bool) {
         #expect(IEEE_754.Classification.isSignMinus(value) == expected, "isSignMinus(\(value)) should be \(expected)")
@@ -128,7 +128,9 @@ struct DoubleIsSubnormalTests {
 
     @Test func maxSubnormal() {
         let maxSubnorm = Double.leastNormalMagnitude.nextDown
-        #expect(IEEE_754.Classification.isSubnormal(maxSubnorm), "Value just below leastNormalMagnitude should be subnormal")
+        #expect(
+            IEEE_754.Classification.isSubnormal(maxSubnorm), "Value just below leastNormalMagnitude should be subnormal"
+        )
     }
 
     @Test(arguments: [0.0, -0.0])
@@ -275,7 +277,7 @@ struct DoubleNumberClassTests {
         (-0.0, .negative(.zero)),
         (0.0, .positive(.zero)),
         (100.0, .positive(.normal)),
-        (Double.infinity, .positive(.infinity))
+        (Double.infinity, .positive(.infinity)),
     ])
     func numberClassCases(value: Double, expected: IEEE_754.Classification.NumberClass) {
         #expect(IEEE_754.Classification.numberClass(value) == expected)
@@ -292,7 +294,7 @@ struct FloatIsSignMinusTests {
         (Float(0.0), false),
         (Float(-0.0), true),
         (Float.infinity, false),
-        (-Float.infinity, true)
+        (-Float.infinity, true),
     ])
     func isSignMinus(value: Float, expected: Bool) {
         #expect(IEEE_754.Classification.isSignMinus(value) == expected)
@@ -338,7 +340,7 @@ struct FloatNumberClassTests {
         (Float(-3.14), .negative(.normal)),
         (Float(3.14), .positive(.normal)),
         (-Float.infinity, .negative(.infinity)),
-        (Float.infinity, .positive(.infinity))
+        (Float.infinity, .positive(.infinity)),
     ])
     func numberClassCases(value: Float, expected: IEEE_754.Classification.NumberClass) {
         #expect(IEEE_754.Classification.numberClass(value) == expected)

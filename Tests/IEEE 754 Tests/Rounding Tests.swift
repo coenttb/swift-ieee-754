@@ -4,6 +4,7 @@
 // Tests for IEEE 754-2019 Section 5.9-5.10: Round to Integral Operations
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("IEEE 754 Rounding Operations")
@@ -12,18 +13,20 @@ struct RoundingTests {}
 // MARK: - Double Floor Tests
 
 extension RoundingTests {
-    @Test("floor rounds toward negative infinity", arguments: [
-        (3.7, 3.0),
-        (3.0, 3.0),
-        (3.2, 3.0),
-        (-3.2, -4.0),
-        (-3.7, -4.0),
-        (-3.0, -3.0),
-        (0.0, 0.0),
-        (-0.0, -0.0),
-        (0.1, 0.0),
-        (-0.1, -1.0),
-    ])
+    @Test(
+        "floor rounds toward negative infinity",
+        arguments: [
+            (3.7, 3.0),
+            (3.0, 3.0),
+            (3.2, 3.0),
+            (-3.2, -4.0),
+            (-3.7, -4.0),
+            (-3.0, -3.0),
+            (0.0, 0.0),
+            (-0.0, -0.0),
+            (0.1, 0.0),
+            (-0.1, -1.0),
+        ])
     func doubleFloor(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.floor(value) == expected)
         #expect(value.ieee754.floor == expected)
@@ -42,18 +45,20 @@ extension RoundingTests {
 // MARK: - Double Ceil Tests
 
 extension RoundingTests {
-    @Test("ceil rounds toward positive infinity", arguments: [
-        (3.2, 4.0),
-        (3.0, 3.0),
-        (3.7, 4.0),
-        (-3.7, -3.0),
-        (-3.2, -3.0),
-        (-3.0, -3.0),
-        (0.0, 0.0),
-        (-0.0, -0.0),
-        (0.1, 1.0),
-        (-0.1, -0.0),
-    ])
+    @Test(
+        "ceil rounds toward positive infinity",
+        arguments: [
+            (3.2, 4.0),
+            (3.0, 3.0),
+            (3.7, 4.0),
+            (-3.7, -3.0),
+            (-3.2, -3.0),
+            (-3.0, -3.0),
+            (0.0, 0.0),
+            (-0.0, -0.0),
+            (0.1, 1.0),
+            (-0.1, -0.0),
+        ])
     func doubleCeil(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.ceil(value) == expected)
         #expect(value.ieee754.ceil == expected)
@@ -72,20 +77,22 @@ extension RoundingTests {
 // MARK: - Double Round Tests
 
 extension RoundingTests {
-    @Test("round rounds to nearest (ties to even)", arguments: [
-        (3.4, 3.0),
-        (3.5, 4.0),  // Ties to even: 4 is even
-        (3.6, 4.0),
-        (4.5, 4.0),  // Ties to even: 4 is even
-        (5.5, 6.0),  // Ties to even: 6 is even
-        (-3.4, -3.0),
-        (-3.5, -4.0), // Ties to even: -4 is even
-        (-3.6, -4.0),
-        (-4.5, -4.0), // Ties to even: -4 is even
-        (-5.5, -6.0), // Ties to even: -6 is even
-        (0.5, 0.0),   // Ties to even: 0 is even
-        (-0.5, -0.0), // Ties to even: 0 is even
-    ])
+    @Test(
+        "round rounds to nearest (ties to even)",
+        arguments: [
+            (3.4, 3.0),
+            (3.5, 4.0),  // Ties to even: 4 is even
+            (3.6, 4.0),
+            (4.5, 4.0),  // Ties to even: 4 is even
+            (5.5, 6.0),  // Ties to even: 6 is even
+            (-3.4, -3.0),
+            (-3.5, -4.0),  // Ties to even: -4 is even
+            (-3.6, -4.0),
+            (-4.5, -4.0),  // Ties to even: -4 is even
+            (-5.5, -6.0),  // Ties to even: -6 is even
+            (0.5, 0.0),  // Ties to even: 0 is even
+            (-0.5, -0.0),  // Ties to even: 0 is even
+        ])
     func doubleRound(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.round(value) == expected)
         #expect(value.ieee754.round == expected)
@@ -104,18 +111,20 @@ extension RoundingTests {
 // MARK: - Double Trunc Tests
 
 extension RoundingTests {
-    @Test("trunc rounds toward zero", arguments: [
-        (3.7, 3.0),
-        (3.2, 3.0),
-        (3.0, 3.0),
-        (-3.2, -3.0),
-        (-3.7, -3.0),
-        (-3.0, -3.0),
-        (0.0, 0.0),
-        (-0.0, -0.0),
-        (0.9, 0.0),
-        (-0.9, -0.0),
-    ])
+    @Test(
+        "trunc rounds toward zero",
+        arguments: [
+            (3.7, 3.0),
+            (3.2, 3.0),
+            (3.0, 3.0),
+            (-3.2, -3.0),
+            (-3.7, -3.0),
+            (-3.0, -3.0),
+            (0.0, 0.0),
+            (-0.0, -0.0),
+            (0.9, 0.0),
+            (-0.9, -0.0),
+        ])
     func doubleTrunc(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.trunc(value) == expected)
         #expect(value.ieee754.trunc == expected)
@@ -134,13 +143,15 @@ extension RoundingTests {
 // MARK: - Float Floor Tests
 
 extension RoundingTests {
-    @Test("float floor rounds toward negative infinity", arguments: [
-        (Float(3.7), Float(3.0)),
-        (Float(3.0), Float(3.0)),
-        (Float(-3.2), Float(-4.0)),
-        (Float(-3.7), Float(-4.0)),
-        (Float(0.0), Float(0.0)),
-    ])
+    @Test(
+        "float floor rounds toward negative infinity",
+        arguments: [
+            (Float(3.7), Float(3.0)),
+            (Float(3.0), Float(3.0)),
+            (Float(-3.2), Float(-4.0)),
+            (Float(-3.7), Float(-4.0)),
+            (Float(0.0), Float(0.0)),
+        ])
     func floatFloor(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.floor(value) == expected)
         #expect(value.ieee754.floor == expected)
@@ -157,13 +168,15 @@ extension RoundingTests {
 // MARK: - Float Ceil Tests
 
 extension RoundingTests {
-    @Test("float ceil rounds toward positive infinity", arguments: [
-        (Float(3.2), Float(4.0)),
-        (Float(3.0), Float(3.0)),
-        (Float(-3.7), Float(-3.0)),
-        (Float(-3.2), Float(-3.0)),
-        (Float(0.0), Float(0.0)),
-    ])
+    @Test(
+        "float ceil rounds toward positive infinity",
+        arguments: [
+            (Float(3.2), Float(4.0)),
+            (Float(3.0), Float(3.0)),
+            (Float(-3.7), Float(-3.0)),
+            (Float(-3.2), Float(-3.0)),
+            (Float(0.0), Float(0.0)),
+        ])
     func floatCeil(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.ceil(value) == expected)
         #expect(value.ieee754.ceil == expected)
@@ -180,14 +193,16 @@ extension RoundingTests {
 // MARK: - Float Round Tests
 
 extension RoundingTests {
-    @Test("float round rounds to nearest (ties to even)", arguments: [
-        (Float(3.4), Float(3.0)),
-        (Float(3.5), Float(4.0)),
-        (Float(3.6), Float(4.0)),
-        (Float(4.5), Float(4.0)),
-        (Float(-3.5), Float(-4.0)),
-        (Float(0.5), Float(0.0)),
-    ])
+    @Test(
+        "float round rounds to nearest (ties to even)",
+        arguments: [
+            (Float(3.4), Float(3.0)),
+            (Float(3.5), Float(4.0)),
+            (Float(3.6), Float(4.0)),
+            (Float(4.5), Float(4.0)),
+            (Float(-3.5), Float(-4.0)),
+            (Float(0.5), Float(0.0)),
+        ])
     func floatRound(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.round(value) == expected)
         #expect(value.ieee754.round == expected)
@@ -204,13 +219,15 @@ extension RoundingTests {
 // MARK: - Float Trunc Tests
 
 extension RoundingTests {
-    @Test("float trunc rounds toward zero", arguments: [
-        (Float(3.7), Float(3.0)),
-        (Float(3.2), Float(3.0)),
-        (Float(-3.2), Float(-3.0)),
-        (Float(-3.7), Float(-3.0)),
-        (Float(0.0), Float(0.0)),
-    ])
+    @Test(
+        "float trunc rounds toward zero",
+        arguments: [
+            (Float(3.7), Float(3.0)),
+            (Float(3.2), Float(3.0)),
+            (Float(-3.2), Float(-3.0)),
+            (Float(-3.7), Float(-3.0)),
+            (Float(0.0), Float(0.0)),
+        ])
     func floatTrunc(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.trunc(value) == expected)
         #expect(value.ieee754.trunc == expected)
@@ -227,22 +244,24 @@ extension RoundingTests {
 // MARK: - Double RoundAwayFromZero Tests
 
 extension RoundingTests {
-    @Test("roundAwayFromZero rounds to nearest (ties away from zero)", arguments: [
-        (3.4, 3.0),
-        (3.5, 4.0),   // Ties away from zero: 3.5 → 4.0
-        (3.6, 4.0),
-        (4.5, 5.0),   // Ties away from zero: 4.5 → 5.0
-        (5.5, 6.0),   // Ties away from zero: 5.5 → 6.0
-        (-3.4, -3.0),
-        (-3.5, -4.0), // Ties away from zero: -3.5 → -4.0
-        (-3.6, -4.0),
-        (-4.5, -5.0), // Ties away from zero: -4.5 → -5.0
-        (-5.5, -6.0), // Ties away from zero: -5.5 → -6.0
-        (0.5, 1.0),   // Ties away from zero: 0.5 → 1.0
-        (-0.5, -1.0), // Ties away from zero: -0.5 → -1.0
-        (2.5, 3.0),   // Ties away from zero: 2.5 → 3.0
-        (1.5, 2.0),   // Ties away from zero: 1.5 → 2.0
-    ])
+    @Test(
+        "roundAwayFromZero rounds to nearest (ties away from zero)",
+        arguments: [
+            (3.4, 3.0),
+            (3.5, 4.0),  // Ties away from zero: 3.5 → 4.0
+            (3.6, 4.0),
+            (4.5, 5.0),  // Ties away from zero: 4.5 → 5.0
+            (5.5, 6.0),  // Ties away from zero: 5.5 → 6.0
+            (-3.4, -3.0),
+            (-3.5, -4.0),  // Ties away from zero: -3.5 → -4.0
+            (-3.6, -4.0),
+            (-4.5, -5.0),  // Ties away from zero: -4.5 → -5.0
+            (-5.5, -6.0),  // Ties away from zero: -5.5 → -6.0
+            (0.5, 1.0),  // Ties away from zero: 0.5 → 1.0
+            (-0.5, -1.0),  // Ties away from zero: -0.5 → -1.0
+            (2.5, 3.0),  // Ties away from zero: 2.5 → 3.0
+            (1.5, 2.0),  // Ties away from zero: 1.5 → 2.0
+        ])
     func doubleRoundAwayFromZero(value: Double, expected: Double) {
         #expect(IEEE_754.Rounding.roundAwayFromZero(value) == expected)
         #expect(value.ieee754.roundAwayFromZero == expected)
@@ -282,15 +301,17 @@ extension RoundingTests {
 // MARK: - Float RoundAwayFromZero Tests
 
 extension RoundingTests {
-    @Test("float roundAwayFromZero rounds to nearest (ties away from zero)", arguments: [
-        (Float(3.4), Float(3.0)),
-        (Float(3.5), Float(4.0)),  // Ties away from zero
-        (Float(3.6), Float(4.0)),
-        (Float(4.5), Float(5.0)),  // Ties away from zero
-        (Float(-3.5), Float(-4.0)), // Ties away from zero
-        (Float(0.5), Float(1.0)),  // Ties away from zero
-        (Float(-0.5), Float(-1.0)), // Ties away from zero
-    ])
+    @Test(
+        "float roundAwayFromZero rounds to nearest (ties away from zero)",
+        arguments: [
+            (Float(3.4), Float(3.0)),
+            (Float(3.5), Float(4.0)),  // Ties away from zero
+            (Float(3.6), Float(4.0)),
+            (Float(4.5), Float(5.0)),  // Ties away from zero
+            (Float(-3.5), Float(-4.0)),  // Ties away from zero
+            (Float(0.5), Float(1.0)),  // Ties away from zero
+            (Float(-0.5), Float(-1.0)),  // Ties away from zero
+        ])
     func floatRoundAwayFromZero(value: Float, expected: Float) {
         #expect(IEEE_754.Rounding.roundAwayFromZero(value) == expected)
         #expect(value.ieee754.roundAwayFromZero == expected)
@@ -432,7 +453,7 @@ extension RoundingTests {
             .towardInfinity(.positive),
             .towardZero,
             .toNearest(.toEven),
-            .toNearest(.awayFromZero)
+            .toNearest(.awayFromZero),
         ]
 
         for direction in directions {

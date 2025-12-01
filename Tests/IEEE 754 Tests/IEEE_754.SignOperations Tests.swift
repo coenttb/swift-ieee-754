@@ -17,7 +17,7 @@ struct DoubleNegateTests {
         (0.0, -0.0),
         (-0.0, 0.0),
         (1.0, -1.0),
-        (-1.0, 1.0)
+        (-1.0, 1.0),
     ])
     func normalValues(value: Double, expected: Double) {
         let result = IEEE_754.SignOperations.negate(value)
@@ -61,7 +61,7 @@ struct DoubleAbsTests {
         (0.0, 0.0),
         (-0.0, 0.0),
         (100.0, 100.0),
-        (-100.0, 100.0)
+        (-100.0, 100.0),
     ])
     func normalValues(value: Double, expected: Double) {
         let result = IEEE_754.SignOperations.abs(value)
@@ -94,7 +94,7 @@ struct DoubleCopySignTests {
         (3.14, 1.0, 3.14),
         (3.14, -1.0, -3.14),
         (-3.14, 1.0, 3.14),
-        (-3.14, -1.0, -3.14)
+        (-3.14, -1.0, -3.14),
     ])
     func normalValues(magnitude: Double, sign: Double, expected: Double) {
         let result = IEEE_754.SignOperations.copySign(magnitude: magnitude, sign: sign)
@@ -141,7 +141,7 @@ struct FloatNegateTests {
         (Float(3.14), Float(-3.14)),
         (Float(-3.14), Float(3.14)),
         (Float(0.0), Float(-0.0)),
-        (Float(-0.0), Float(0.0))
+        (Float(-0.0), Float(0.0)),
     ])
     func normalValues(value: Float, expected: Float) {
         let result = IEEE_754.SignOperations.negate(value)
@@ -171,7 +171,7 @@ struct FloatAbsTests {
         (Float(3.14), Float(3.14)),
         (Float(-3.14), Float(3.14)),
         (Float(0.0), Float(0.0)),
-        (Float(-0.0), Float(0.0))
+        (Float(-0.0), Float(0.0)),
     ])
     func normalValues(value: Float, expected: Float) {
         let result = IEEE_754.SignOperations.abs(value)
@@ -197,7 +197,7 @@ struct FloatCopySignTests {
         (Float(3.14), Float(1.0), Float(3.14)),
         (Float(3.14), Float(-1.0), Float(-3.14)),
         (Float(-3.14), Float(1.0), Float(3.14)),
-        (Float(-3.14), Float(-1.0), Float(-3.14))
+        (Float(-3.14), Float(-1.0), Float(-3.14)),
     ])
     func normalValues(magnitude: Float, sign: Float, expected: Float) {
         let result = IEEE_754.SignOperations.copySign(magnitude: magnitude, sign: sign)

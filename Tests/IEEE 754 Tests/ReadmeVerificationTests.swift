@@ -5,6 +5,7 @@
 // Ensures all README examples compile and work correctly
 
 import Testing
+
 @testable import IEEE_754
 
 @Suite("README Verification")
