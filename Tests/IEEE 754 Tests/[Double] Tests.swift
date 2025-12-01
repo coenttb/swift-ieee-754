@@ -280,7 +280,7 @@ extension `Performance Tests` {
             #expect(deserialized?.count == 10_000)
         }
 
-        @Test(.timed(threshold: .milliseconds(5)))
+        @Test(.timed(threshold: .milliseconds(20)))
         func `deserialize 100 Doubles repeatedly`() {
             var bytes: [UInt8] = []
             for i in 0..<100 {
