@@ -3,6 +3,7 @@
 //
 // Convenient namespaced access to IEEE 754 serialization
 
+public import Binary
 import Standards
 
 extension [UInt8] {
@@ -57,7 +58,7 @@ extension [UInt8].IEEE754 {
     /// - Note: Delegates to ``IEEE_754/Binary64/bytes(from:endianness:)``
     public static func bytes(
         from value: Double,
-        endianness: [UInt8].Endianness = .little
+        endianness: Binary.Endianness = .little
     ) -> [UInt8] {
         IEEE_754.Binary64.bytes(from: value, endianness: endianness)
     }
@@ -81,7 +82,7 @@ extension [UInt8].IEEE754 {
     /// - Note: Delegates to ``IEEE_754/Binary32/bytes(from:endianness:)``
     public static func bytes(
         from value: Float,
-        endianness: [UInt8].Endianness = .little
+        endianness: Binary.Endianness = .little
     ) -> [UInt8] {
         IEEE_754.Binary32.bytes(from: value, endianness: endianness)
     }
@@ -108,7 +109,7 @@ extension [UInt8] {
     /// ```
     ///
     /// - Note: Delegates to ``IEEE_754/Binary64/bytes(from:endianness:)``
-    public init(_ value: Double, endianness: Endianness = .little) {
+    public init(_ value: Double, endianness: Binary.Endianness = .little) {
         self = IEEE_754.Binary64.bytes(from: value, endianness: endianness)
     }
 
@@ -130,7 +131,7 @@ extension [UInt8] {
     /// ```
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/bytes(from:endianness:)``
-    public init(_ value: Float, endianness: Endianness = .little) {
+    public init(_ value: Float, endianness: Binary.Endianness = .little) {
         self = IEEE_754.Binary32.bytes(from: value, endianness: endianness)
     }
 }

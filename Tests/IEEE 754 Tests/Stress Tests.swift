@@ -98,7 +98,7 @@ extension `Performance Tests` {
             let original: Double = 1.41421356237309504880
 
             for i in 0..<100 {
-                let endianness: [UInt8].Endianness = i % 2 == 0 ? .little : .big
+                let endianness: Binary.Endianness = i % 2 == 0 ? .little : .big
                 let bytes = original.bytes(endianness: endianness)
                 _ = Double(bytes: bytes, endianness: endianness)
             }
@@ -162,7 +162,7 @@ extension `Performance Tests` {
             let original: Float = 2.71828
 
             for i in 0..<100 {
-                let endianness: [UInt8].Endianness = i % 2 == 0 ? .little : .big
+                let endianness: Binary.Endianness = i % 2 == 0 ? .little : .big
                 let bytes = original.bytes(endianness: endianness)
                 _ = Float(bytes: bytes, endianness: endianness)
             }

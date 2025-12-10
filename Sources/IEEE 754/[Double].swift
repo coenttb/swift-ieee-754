@@ -3,6 +3,7 @@
 //
 // Array extensions for Swift standard library Double (IEEE 754 binary64)
 
+public import Binary
 import Standards
 
 extension [Double] {
@@ -31,7 +32,7 @@ extension [Double] {
     /// - Invalid byte counts (not divisible by 8) return `nil`
     ///
     /// - Note: Uses ``Double/init(bytes:endianness:)`` under the hood
-    public init?<C: Collection>(bytes: C, endianness: [UInt8].Endianness = .little)
+    public init?<C: Collection>(bytes: C, endianness: Binary.Endianness = .little)
     where C.Element == UInt8 {
         let elementSize = MemoryLayout<Element>.size
         guard bytes.count % elementSize == 0 else { return nil }

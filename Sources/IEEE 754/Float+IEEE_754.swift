@@ -3,6 +3,7 @@
 //
 // IEEE 754 extensions for Float (binary32)
 
+public import Binary
 import Standards
 
 extension Float {
@@ -69,7 +70,7 @@ extension Float {
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/value(from:endianness:)``
     @_transparent
-    public init?(bytes: [UInt8], endianness: [UInt8].Endianness = .little) {
+    public init?(bytes: [UInt8], endianness: Binary.Endianness = .little) {
         guard let value = IEEE_754.Binary32.value(from: bytes, endianness: endianness) else {
             return nil
         }
@@ -98,7 +99,7 @@ extension Float {
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/bytes(from:endianness:)``
     @_transparent
-    public func bytes(endianness: [UInt8].Endianness = .little) -> [UInt8] {
+    public func bytes(endianness: Binary.Endianness = .little) -> [UInt8] {
         IEEE_754.Binary32.bytes(from: self, endianness: endianness)
     }
 }
@@ -129,7 +130,7 @@ extension Float {
     @_transparent
     public static func ieee754(
         _ bytes: [UInt8],
-        endianness: [UInt8].Endianness = .little
+        endianness: Binary.Endianness = .little
     ) -> Float? {
         IEEE_754.Binary32.value(from: bytes, endianness: endianness)
     }
@@ -154,7 +155,7 @@ extension Float.IEEE754 {
     ///
     /// - Note: Delegates to ``IEEE_754/Binary32/bytes(from:endianness:)``
     @_transparent
-    public func bytes(endianness: [UInt8].Endianness = .little) -> [UInt8] {
+    public func bytes(endianness: Binary.Endianness = .little) -> [UInt8] {
         IEEE_754.Binary32.bytes(from: float, endianness: endianness)
     }
 

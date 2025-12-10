@@ -3,6 +3,7 @@
 //
 // IEEE 754 binary64 (double precision) format
 
+public import Binary
 import Standards
 
 extension IEEE_754 {
@@ -221,7 +222,7 @@ extension IEEE_754.Binary64 {
     @inlinable
     public static func bytes(
         from value: Double,
-        endianness: [UInt8].Endianness = .little
+        endianness: Binary.Endianness = .little
     ) -> [UInt8] {
         let bitPattern = value.bitPattern
         return [UInt8](bitPattern, endianness: endianness)
@@ -246,7 +247,7 @@ extension IEEE_754.Binary64 {
     @inlinable
     public static func value(
         from bytes: [UInt8],
-        endianness: [UInt8].Endianness = .little
+        endianness: Binary.Endianness = .little
     ) -> Double? {
         guard bytes.count == byteSize else { return nil }
 

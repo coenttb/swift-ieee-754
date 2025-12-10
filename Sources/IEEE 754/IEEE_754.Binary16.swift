@@ -220,7 +220,7 @@ extension IEEE_754 {
         @inlinable
         public static func bytes(
             from value: Float16,
-            endianness: [UInt8].Endianness = .little
+            endianness: Binary.Endianness = .little
         ) -> [UInt8] {
             let bitPattern = value.bitPattern
             return [UInt8](bitPattern, endianness: endianness)
@@ -246,7 +246,7 @@ extension IEEE_754 {
         @inlinable
         public static func value(
             from bytes: [UInt8],
-            endianness: [UInt8].Endianness = .little
+            endianness: Binary.Endianness = .little
         ) -> Float16? {
             guard bytes.count == byteSize else { return nil }
 

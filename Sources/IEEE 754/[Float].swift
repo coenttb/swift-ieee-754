@@ -3,6 +3,7 @@
 //
 // Array extensions for Swift standard library Float (IEEE 754 binary32)
 
+public import Binary
 import Standards
 
 extension [Float] {
@@ -31,7 +32,7 @@ extension [Float] {
     /// - Invalid byte counts (not divisible by 4) return `nil`
     ///
     /// - Note: Uses ``Float/init(bytes:endianness:)`` under the hood
-    public init?<C: Collection>(bytes: C, endianness: [UInt8].Endianness = .little)
+    public init?<C: Collection>(bytes: C, endianness: Binary.Endianness = .little)
     where C.Element == UInt8 {
         let elementSize = MemoryLayout<Element>.size
         guard bytes.count % elementSize == 0 else { return nil }

@@ -320,7 +320,7 @@ extension `Performance Tests` {
             let value: Float = 3.14159
 
             for i in 0..<1_000 {
-                let endianness: [UInt8].Endianness = i % 2 == 0 ? .little : .big
+                let endianness: Binary.Endianness = i % 2 == 0 ? .little : .big
                 let bytes = value.bytes(endianness: endianness)
                 _ = [Float](bytes: [bytes].flatMap { $0 }, endianness: endianness)
             }
